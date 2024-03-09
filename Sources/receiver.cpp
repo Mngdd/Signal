@@ -1,6 +1,6 @@
-#include "vector3d.h"
-#include "signal.h"
-#include "receiver.h"
+#include "../Headers/vector3d.h"
+#include "../Headers/signal.h"
+#include "../Headers/receiver.h"
 
 
 Receiver::Receiver(Vector3D coordinates_, double critical_energy_, double L_) :

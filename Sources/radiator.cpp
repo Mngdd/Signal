@@ -1,6 +1,6 @@
-#include "vector3d.h"
-#include "signal.h"
-#include "radiator.h"
+#include "../Headers/vector3d.h"
+#include "../Headers/signal.h"
+#include "../Headers/radiator.h"
 
 
 Radiator::Radiator(double energy_, Vector3D coordinates_, Vector3D direction_vector_) :

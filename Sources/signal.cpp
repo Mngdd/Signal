@@ -1,6 +1,6 @@
-#include "vector3d.h"
-#include "object.h"
-#include "signal.h"
+#include "../Headers/vector3d.h"
+#include "../Headers/object.h"
+#include "../Headers/signal.h"
 
 
 Signal::Signal(Vector3D coordinates_, Vector3D starting_direction_vector_, double energy_) :

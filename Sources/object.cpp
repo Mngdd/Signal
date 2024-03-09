@@ -1,6 +1,6 @@
-#include "vector3d.h"
-#include "object.h"
-#include "signal.h"
+#include "../Headers/vector3d.h"
+#include "../Headers/object.h"
+#include "../Headers/signal.h"
 
 
 Object::Object(Vector3D coordinates, double radius_, double refractive_index_, double effective_reflection_surface_) :

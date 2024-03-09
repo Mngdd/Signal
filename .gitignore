@@ -1,0 +1,5 @@
+/cmake-build-debug/
+/build/
+/venv/
+/main.spec
+/.idea/
