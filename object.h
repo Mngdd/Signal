@@ -7,6 +7,15 @@
 class Vector3D;
 class Signal;
 
+
+
+//New method - integration of object's position (интегрирование положения объекта, т.е. функция, которая обно)
+//x(t+delta_t) = x(t) + vx*delta_t
+//y(t+delta_t) = y(t) + vy*delta_t
+//z(t+delta_t) = z(t) + vz*delta_t
+
+
+
 class Object
 {
     public:
