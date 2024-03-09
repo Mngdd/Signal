@@ -10,7 +10,7 @@
 void simulate()
 {
     Radiator rad{0, {0, 1, 0}, {0, 1, 0}};
-    Object obj{{0, 5, 0}, 1};
+    Object obj{{0, 5, 0}, 1, 0.5};
     Receiver rec{{0, 1, 0}, 0};
 
     std::vector<Signal> vector_of_signals{};

@@ -3,9 +3,9 @@
 #include "receiver.h"
 
 
-Receiver::Receiver(Vector3D coordinates_, double critical_energy_) :
+Receiver::Receiver(Vector3D coordinates_, double critical_energy_, double L_) :
     coordinates{coordinates_}, critical_energy{critical_energy_}, delay_sum{0},
-    average_delay{0}, current_energy{0}, received_signals_count{0}, dist{0} {}
+    average_delay{0}, current_energy{0}, received_signals_count{0}, dist{0}, L{L_} {}
 
 double Receiver::distance() { return dist; }
 
