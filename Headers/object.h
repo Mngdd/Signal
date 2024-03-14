@@ -19,7 +19,7 @@ class Signal;
 class Object
 {
     public:
-        Object(Vector3D coordinates_, double radius_, double refractive_index_);
+        Object(Vector3D coordinates_, double radius_, double refractive_index_, double effective_reflection_surface_, Vector3D speed_vector_);
         void reflect(std::vector<Signal>& v_sign);
         Vector3D coordinates();
 
@@ -28,4 +28,5 @@ class Object
         double refractive_index;
         double effective_reflection_surface; //in the next realization it will depend on the radius
         double radius;
+        Vector3D speed_vector;
 };

@@ -11,7 +11,7 @@ class Signal;
 class Receiver
 {
     public:
-        Receiver(Vector3D coordinates_, double critical_energy_);
+        Receiver(Vector3D coordinates_, double critical_energy_, double L_, double amplificaton_coefficient_);
 
         void receive_signals(std::vector<Signal>& v_sign);
         double distance();
@@ -22,5 +22,7 @@ class Receiver
         double average_delay;
         double delay_sum;
         double dist;
+        double L;
+        double amplificaton_coefficient;
         int received_signals_count;
 };

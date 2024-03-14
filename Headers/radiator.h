@@ -16,6 +16,7 @@ class Radiator
 
     private:
         double energy;
+        double wave_length;
         Vector3D coordinates;
         Vector3D direction_vector;
 };

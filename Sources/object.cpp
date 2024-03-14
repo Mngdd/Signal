@@ -3,8 +3,9 @@
 #include "../Headers/signal.h"
 
 
-Object::Object(Vector3D coordinates, double radius_, double refractive_index_, double effective_reflection_surface_) :
-    val_coordinates{coordinates}, radius{radius_}, refractive_index{refractive_index_}, effective_reflection_surface{effective_reflection_surface_} {}
+Object::Object(Vector3D coordinates, double radius_, double refractive_index_, double effective_reflection_surface_, Vector3D speed_vector_) :
+    val_coordinates{coordinates}, radius{radius_}, refractive_index{refractive_index_}, effective_reflection_surface{effective_reflection_surface_},
+    speed_vector{speed_vector_} {}
 
 Vector3D Object::coordinates() { return val_coordinates; }
 
