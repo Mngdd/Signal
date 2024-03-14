@@ -5,6 +5,8 @@
 
 
 class Vector3D;
+class Object;
+class Receiver;
 class Signal;
 
 
@@ -15,12 +17,19 @@ class Signal;
 //z(t+delta_t) = z(t) + vz*delta_t
 
 
+double distance(Object& object, Receiver& receiver);
+
 
 class Object
 {
     public:
-        Object(Vector3D coordinates_, double radius_, double refractive_index_, double effective_reflection_surface_, Vector3D speed_vector_);
+        Object(Vector3D coordinates_, double radius_, double refractive_index_, Vector3D speed_vector_);
+
+        void set_effective_reflection_surface(Receiver& receiver);
         void reflect(std::vector<Signal>& v_sign);
+        void update_position(double dt);
+        double sigma() { return effective_reflection_surface; }
+        friend double distance(Object& object, Receiver& receiver);
         Vector3D coordinates();
 
     private:
