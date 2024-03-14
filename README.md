@@ -5,3 +5,6 @@
 
 ## Вывод формул by Шифрин Марк
 
+### Общая формула мощности сигнала
+
+![tmp](https://github.com/Mngdd/Signal/blob/main/formula_01)
