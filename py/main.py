@@ -2,8 +2,10 @@ import sys
 import subprocess
 import json
 import pathlib
+import qdarktheme
 
 from PyQt6 import uic, QtGui
+from PyQt6.QtCore import QVariantAnimation
 from PyQt6.QtWidgets import QApplication, QMainWindow
 
 
@@ -75,9 +77,14 @@ def except_hook(cls, exception, traceback):
 if __name__ == '__main__':
     sys.excepthook = except_hook
     app = QApplication(sys.argv)
-    app.setStyle('Fusion')
     ex = MainMenu()
     print(app.style())
+
+    #qdarktheme.setup_theme()
+    qdarktheme.setup_theme(custom_colors={"primary": "#FFA317"})
+    app.setStyle('Fusion')
+    app.setPalette(qdarktheme.load_palette())
+
     ex.show()
     sys.exit(app.exec())
 
