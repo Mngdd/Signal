@@ -16,9 +16,7 @@ class MainMenu(QMainWindow):
         self.setWindowTitle('Signal')
         self.setWindowIcon(QtGui.QIcon('../UI/ico-white.png'))
 
-        self.data = {"RAD": {"COORD": (.0, .0, .0), "E": .0, "DIR": (.0, .0, .0)},
-                     "OBJ": {"COORD": (.0, .0, .0), "RADIUS": .0},
-                     "REC": {"COORD": (.0, .0, .0), "CE": .0}}
+        self.data = None
         self.distance = 0
         self.Button.clicked.connect(self.calculate)
         self.ERR_MSG.setVisible(False)
@@ -28,10 +26,10 @@ class MainMenu(QMainWindow):
 
         self.data = {"RAD": {"COORD": (self.RAD_COORD_X.value(), self.RAD_COORD_Y.value(), self.RAD_COORD_Z.value()),
                              "E": self.RAD_ENERGY.value(),
-                             "DIR": (self.RAD_DIR_X.value(), self.RAD_DIR_Y.value(), self.RAD_DIR_Z.value())},
+                             "DIR": (self.RAD_DIR_X.value(), self.RAD_DIR_Y.value(), self.RAD_DIR_Z.value()),
+                             "AMP": self.RAD_AMP.value()},
                      "OBJ": {"COORD": (self.OBJ_COORD_X.value(), self.OBJ_COORD_Y.value(), self.OBJ_COORD_Z.value()),
-                             "RADIUS": self.OBJ_RADIUS.value(), "ERS": self.OBJ_ERS.value(),
-                             "REF_IND": self.OBJ_REF.value(),
+                             "RADIUS": self.OBJ_RADIUS.value(), "REF_IND": self.OBJ_REF.value(),
                              "VEL": (self.OBJ_VEL_X.value(), self.OBJ_VEL_Y.value(), self.OBJ_VEL_Z.value())},
                      "REC": {"COORD": (self.REC_COORD_X.value(), self.REC_COORD_Y.value(), self.REC_COORD_Z.value()),
                              "CE": self.REC_CE.value()}}

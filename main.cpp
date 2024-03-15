@@ -14,6 +14,21 @@
 
 using JSON = nlohmann::json;
 
+double speed_calculation(Radiator& radiator, Object& object, Receiver& receiver, double dt)
+{
+    double l1, l2, l3;
+    radiator.emit_signal(receiver, object);
+    l1 = receiver.distance_using_power();
+    object.update_position(dt);
+    radiator.emit_signal(receiver, object);
+    l2 = receiver.distance_using_power();
+    object.update_position(dt);
+    radiator.emit_signal(receiver, object);
+    l3 = receiver.distance_using_power();
+    object.update_position(dt);
+
+    return (std::pow(l1*l1 + l3*l3 - 2*l2*l2, 0.5))/dt*pow(2,0.5);
+}
 
 void simulate(const std::string &path) {
     // json unpacking
@@ -48,12 +63,19 @@ void simulate(const std::string &path) {
 
     std::vector<Signal> vector_of_signals{};
 
-    rad.emit_signal(vector_of_signals);
-    obj.reflect(vector_of_signals);
-    rec.receive_signals(vector_of_signals);
+    // rad.emit_signal(vector_of_signals);
+    // obj.reflect(vector_of_signals);
+    // rec.receive_signals(vector_of_signals);
 
-    double distance = rec.distance();
-    std::cout << "$RESULT$" << distance << std::endl; // ВСЕГДА ПИШИТЕ ENDL ИНАЧЕ Я ВАС НАЙДУ И ЗАДУШУ
+    rad.emit_signal(rec, obj);
+
+    // double distance = rec.distance();
+
+    double distance = rec.distance_using_power();
+    double speed = speed_calculation(rad, obj,
+                                     rec, data["DELTA_TIME"].get<double>());
+
+    std::cout << "$RESULT$" << distance << speed << "$RESULT$" << std::endl; // ВСЕГДА ПИШИТЕ ENDL ИНАЧЕ Я ВАС НАЙДУ И ЗАДУШУ
 }
 
 

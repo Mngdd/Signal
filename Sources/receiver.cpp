@@ -1,13 +1,40 @@
 #include "../Headers/vector3d.h"
 #include "../Headers/signal.h"
 #include "../Headers/receiver.h"
+#include "../Headers/radiator.h"
+#include "../Headers/object.h"
+
+
+/*
+double speed_calculation(Radiator& radiator, Object& object, Receiver& receiver, double dt)
+{
+    double l1, l2, l3;
+    radiator.emit_signal(receiver, object);
+    l1 = receiver.distance_using_power();
+    object.update_position(dt);
+    radiator.emit_signal(receiver, object);
+    l2 = receiver.distance_using_power();
+    object.update_position(dt);
+    radiator.emit_signal(receiver, object);
+    l3 = receiver.distance_using_power();
+    object.update_position(dt);
+
+    return (std::pow(l1*l1 + l3*l3 - 2*l2*l2, 0.5))/dt*pow(2,0.5);
+}
+*/
 
 
 Receiver::Receiver(Vector3D coordinates_, double critical_energy_) :
-    coordinates{coordinates_}, critical_energy{critical_energy_}, delay_sum{0},
-    average_delay{0}, current_energy{0}, received_signals_count{0}, dist{0} {}
+    coordinates{coordinates_}, critical_energy{critical_energy_}, delay_sum{0}, average_delay{0},
+    current_energy{0}, received_signals_count{0}, dist{0} {}
 
 double Receiver::distance() { return dist; }
+
+double Receiver::distance_using_power()
+{
+    double Pt_div_Pr = radiated_power/received_power;
+    return Pt_div_Pr*((sigma*std::pow(wave_length,2))/(64*pow(PI,3)*L));
+}
 
 void Receiver::receive_signals(std::vector<Signal>& v_sign)
 {

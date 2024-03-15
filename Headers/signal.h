@@ -1,7 +1,9 @@
 #pragma once
 
 
-constexpr double speed_of_light = 299792458; // meters per second
+constexpr double speed_of_light = 299792458; // meter / second
+constexpr double plank_constant = 6.626 * std::pow(10, -34); // joule * second
+constexpr double PI = 3.1415926535;
 
 
 class Vector3D;

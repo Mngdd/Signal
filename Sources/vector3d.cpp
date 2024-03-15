@@ -39,3 +39,5 @@ bool can_collide(Vector3D v1, Vector3D v2)
             ((v1.x == v2.x && v1.x == 0 && v1.z == v2.z && v1.z == 0 && v2.y != 0)) ||
             ((v1.y == v2.y && v1.y == 0 && v1.z == v2.z && v1.z == 0 && v2.x != 0)));
 }
+
+//g++ -Og -Wall -Wextra -pedantic -Ilib -o Signal_ object.cpp radiator.cpp receiver.cpp signal.cpp vector3d.cpp
