@@ -5,7 +5,8 @@
 #include "../Headers/object.h"
 
 
-double speed(Radiator& radiator, Object& object, Receiver& receiver, double dt)
+/*
+double speed_calculation(Radiator& radiator, Object& object, Receiver& receiver, double dt)
 {
     double l1, l2, l3;
     radiator.emit_signal(receiver, object);
@@ -20,6 +21,7 @@ double speed(Radiator& radiator, Object& object, Receiver& receiver, double dt)
 
     return (std::pow(l1*l1 + l3*l3 - 2*l2*l2, 0.5))/dt*pow(2,0.5);
 }
+*/
 
 
 Receiver::Receiver(Vector3D coordinates_, double critical_energy_) :

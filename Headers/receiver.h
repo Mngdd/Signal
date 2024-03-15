@@ -12,7 +12,7 @@ class Receiver;
 
 double distance(Object& object, Receiver& receiver);
 
-double speed(Radiator& radiator, Object& object, Receiver& receiver, double dt);
+// double speed_calculation(Radiator& radiator, Object& object, Receiver& receiver, double dt);
 
 class Receiver
 {
