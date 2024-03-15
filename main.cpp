@@ -3,7 +3,6 @@
 #include <string>
 #include <stdexcept>
 #include <vector>
-#include <map>
 #include <fstream>
 #include "Headers/vector3d.h"
 #include "Headers/object.h"
@@ -14,8 +13,7 @@
 
 using JSON = nlohmann::json;
 
-double speed_calculation(Radiator& radiator, Object& object, Receiver& receiver, double dt)
-{
+double speed_calculation(Radiator &radiator, Object &object, Receiver &receiver, double dt) {
     double l1, l2, l3;
     radiator.emit_signal(receiver, object);
     l1 = receiver.distance_using_power();
@@ -27,7 +25,7 @@ double speed_calculation(Radiator& radiator, Object& object, Receiver& receiver,
     l3 = receiver.distance_using_power();
     object.update_position(dt);
 
-    return (std::pow(l1*l1 + l3*l3 - 2*l2*l2, 0.5))/dt*pow(2,0.5);
+    return (std::pow(l1 * l1 + l3 * l3 - 2 * l2 * l2, 0.5)) / (dt * pow(2, 0.5));
 }
 
 void simulate(const std::string &path) {
@@ -41,20 +39,26 @@ void simulate(const std::string &path) {
     JSON data = JSON::parse(f);
     std::cout << data["RAD"]["E"].get<double>() << std::endl;
     // --------------
-
+    double L = 1;
     Radiator rad{data["RAD"]["E"].get<double>(),
                  Vector3D{data["RAD"]["COORD"][0].get<double>(),
                           data["RAD"]["COORD"][1].get<double>(),
                           data["RAD"]["COORD"][2].get<double>()},
                  Vector3D{data["RAD"]["DIR"][0].get<double>(),
                           data["RAD"]["DIR"][1].get<double>(),
-                          data["RAD"]["DIR"][2].get<double>()}
+                          data["RAD"]["DIR"][2].get<double>()},
+                 L,
+                 data["RAD"]["AMP"].get<double>()
     };
 
     Object obj{Vector3D{data["OBJ"]["COORD"][0].get<double>(),
                         data["OBJ"]["COORD"][1].get<double>(),
                         data["OBJ"]["COORD"][2].get<double>()},
-               data["OBJ"]["RADIUS"].get<double>()};
+               data["OBJ"]["RADIUS"].get<double>(),
+               data["OBJ"]["REF_IND"].get<double>(),
+               Vector3D{data["OBJ"]["VEL"][0].get<double>(),
+                        data["OBJ"]["VEL"][1].get<double>(),
+                        data["OBJ"]["VEL"][2].get<double>()}};
 
     Receiver rec{Vector3D{data["REC"]["COORD"][0].get<double>(),
                           data["REC"]["COORD"][1].get<double>(),
@@ -67,7 +71,16 @@ void simulate(const std::string &path) {
     // obj.reflect(vector_of_signals);
     // rec.receive_signals(vector_of_signals);
 
+    obj.set_effective_reflection_surface(rec);
+
     rad.emit_signal(rec, obj);
+
+    std::cout << ' ' <<
+    // rec.received_power << ' ' <<
+    // rec.L << ' ' <<
+    rec.sigma << ' ';
+    // rec.wave_length << ' ' <<
+    // rec.amplification_coefficient << '\n';
 
     // double distance = rec.distance();
 
@@ -75,7 +88,8 @@ void simulate(const std::string &path) {
     double speed = speed_calculation(rad, obj,
                                      rec, data["DELTA_TIME"].get<double>());
 
-    std::cout << "$RESULT$" << distance << speed << "$RESULT$" << std::endl; // ВСЕГДА ПИШИТЕ ENDL ИНАЧЕ Я ВАС НАЙДУ И ЗАДУШУ
+    std::cout << "$RESULT$" << distance << "$RESULT$" << speed << std::endl;
+    // ВСЕГДА ПИШИТЕ ENDL И РАЗДЕЛЯЙТЕ ВВОД СПЕЦТЕКСТОМ ИНАЧЕ Я ВАС НАЙДУ И ЗАДУШУ
 }
 
 

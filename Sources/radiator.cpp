@@ -3,6 +3,7 @@
 #include "../Headers/receiver.h"
 #include "../Headers/radiator.h"
 #include "../Headers/object.h"
+#include <iostream>
 
 
 Radiator::Radiator(double energy_, Vector3D coordinates_, Vector3D direction_vector_, double L_, double amplification_coefficient_) :

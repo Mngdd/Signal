@@ -755,7 +755,7 @@
      <rect>
       <x>20</x>
       <y>470</y>
-      <width>1161</width>
+      <width>1176</width>
       <height>51</height>
      </rect>
     </property>
@@ -767,7 +767,7 @@
       <widget class="QPushButton" name="Button">
        <property name="minimumSize">
         <size>
-         <width>240</width>
+         <width>200</width>
          <height>40</height>
         </size>
        </property>
@@ -781,9 +781,12 @@
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Minimum</enum>
+       </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>40</width>
+         <width>20</width>
          <height>20</height>
         </size>
        </property>
@@ -813,53 +816,100 @@
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer_2">
+      <spacer name="horizontalSpacer_9">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Minimum</enum>
+       </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>40</width>
+         <width>20</width>
          <height>20</height>
         </size>
        </property>
       </spacer>
      </item>
      <item>
-      <widget class="QLabel" name="Dist_txt">
-       <property name="font">
-        <font>
-         <pointsize>16</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Distance:</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_11">
+       <item>
+        <widget class="QLabel" name="Dist_txt">
+         <property name="font">
+          <font>
+           <pointsize>16</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Distance:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="DIST_NUM">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>16</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>NA</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
-      <widget class="QLabel" name="DIST_NUM">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>200</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>16</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>NA</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_22">
+       <item>
+        <widget class="QLabel" name="Vel_txt">
+         <property name="font">
+          <font>
+           <pointsize>16</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Speed:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="VEL_NUM">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>16</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>NA</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </widget>

@@ -18,6 +18,7 @@ class MainMenu(QMainWindow):
 
         self.data = None
         self.distance = 0
+        self.velocity = 0
         self.Button.clicked.connect(self.calculate)
         self.ERR_MSG.setVisible(False)
 
@@ -32,7 +33,8 @@ class MainMenu(QMainWindow):
                              "RADIUS": self.OBJ_RADIUS.value(), "REF_IND": self.OBJ_REF.value(),
                              "VEL": (self.OBJ_VEL_X.value(), self.OBJ_VEL_Y.value(), self.OBJ_VEL_Z.value())},
                      "REC": {"COORD": (self.REC_COORD_X.value(), self.REC_COORD_Y.value(), self.REC_COORD_Z.value()),
-                             "CE": self.REC_CE.value()}}
+                             "CE": self.REC_CE.value()},
+                     "DELTA_TIME": self.DELTA_TIME.value()}
 
         # cmd_args = ["../Signal.exe", self.data['RAD']['E'], *self.data['RAD']['COORD'],
         #             *self.data['RAD']['DIR'], *self.data['OBJ']['COORD'], self.data['OBJ']['RADIUS'],
@@ -52,6 +54,7 @@ class MainMenu(QMainWindow):
         out, err, errcode = res.stdout.strip().decode(), res.stderr, res.returncode
         print(out, len(err), err, errcode)
         self.distance = out.split("$RESULT$")[1]
+        self.velocity = out.split("$RESULT$")[2]
         if len(err) != 0:
             self.raise_err()
             return
@@ -59,13 +62,16 @@ class MainMenu(QMainWindow):
             self.ERR_MSG.setText("No objects found...")
             self.ERR_MSG.setVisible(True)
             self.DIST_NUM.setText("NA")
+            self.VEL_NUM.setText("NA")
             return
         self.DIST_NUM.setText(self.distance)
+        self.VEL_NUM.setText(self.velocity)
 
-    def raise_err(self):
+def raise_err(self):
         self.ERR_MSG.setText("Oops, something went wrong! Please check the entered data...")
         self.ERR_MSG.setVisible(True)
         self.DIST_NUM.setText("NA")
+        self.VEL_NUM.setText("NA")
 
 
 def except_hook(cls, exception, traceback):
