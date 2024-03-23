@@ -92,7 +92,9 @@ void simulate(const std::string &path) {
     double speed = speed_calculation(rad, obj,
                                      rec, delta_t);
 
-    std::cout << "$RESULT$" << distance << "$RESULT$" << speed << std::endl;
+    std::cout << "$RESULT$" << distance << "$RESULT$" << speed <<
+                 "$RESULT$" << rec.sigma << "$RESULT$" << rec.wave_length <<
+                 "$RESULT$" << L << std::endl;
     // ВСЕГДА ПИШИТЕ ENDL И РАЗДЕЛЯЙТЕ ВВОД СПЕЦТЕКСТОМ ИНАЧЕ Я ВАС НАЙДУ И ЗАДУШУ
 
     std::ofstream outfile("../textfiles/measurements.txt");
@@ -108,6 +110,7 @@ void simulate(const std::string &path) {
     }
 
 }
+
 
 
 int main(int argc, char *argv[]) // coords of obj, rad, rec
