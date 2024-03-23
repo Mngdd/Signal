@@ -6,8 +6,7 @@
 ## Вывод формул by jew
 
 ### Общая формула мощности сигнала
-
-![tmp](https://github.com/Mngdd/Signal/blob/main/formula_01)
+![formula_01](https://github.com/Mngdd/Signal/assets/74361463/96ff7a79-c20c-4348-ae8a-bac80024d5b8)
 
 Где:
 * r - расстояние между источником и приемником
