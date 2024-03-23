@@ -2,7 +2,7 @@ import sys
 import subprocess
 import json
 import pathlib
-import qdarktheme
+# import qdarktheme
 
 from PyQt6 import uic, QtGui
 from PyQt6.QtCore import QVariantAnimation
@@ -84,10 +84,10 @@ if __name__ == '__main__':
     ex = MainMenu()
     print(app.style())
 
-    #qdarktheme.setup_theme()
-    qdarktheme.setup_theme(custom_colors={"primary": "#FFA317"})
+    # qdarktheme.setup_theme()
+    # qdarktheme.setup_theme(custom_colors={"primary": "#FFA317"})
     app.setStyle('Fusion')
-    app.setPalette(qdarktheme.load_palette())
+    # app.setPalette(qdarktheme.load_palette())
 
     ex.show()
     sys.exit(app.exec())
