@@ -13,6 +13,8 @@
 
 using JSON = nlohmann::json;
 
+int number_of_measurements = 100;
+
 double speed_calculation(Radiator &radiator, Object &object, Receiver &receiver, double dt) {
     double l1, l2, l3;
     radiator.emit_signal(receiver, object);
@@ -84,12 +86,27 @@ void simulate(const std::string &path) {
 
     // double distance = rec.distance();
 
+    double delta_t = data["DELTA_TIME"].get<double>();
+
     double distance = rec.distance_using_power();
     double speed = speed_calculation(rad, obj,
-                                     rec, data["DELTA_TIME"].get<double>());
+                                     rec, delta_t);
 
     std::cout << "$RESULT$" << distance << "$RESULT$" << speed << std::endl;
     // ВСЕГДА ПИШИТЕ ENDL И РАЗДЕЛЯЙТЕ ВВОД СПЕЦТЕКСТОМ ИНАЧЕ Я ВАС НАЙДУ И ЗАДУШУ
+
+    std::ofstream outfile("../textfiles/measurements.txt");
+    outfile << "==========FILE_FOR_RECEIVED_MEASUREMENTS==========" << std::endl << std::endl;
+
+    for(int i = 1; i <= number_of_measurements; i++)
+    {
+        distance = rec.distance_using_power();
+        speed = speed_calculation(rad, obj, rec, delta_t);
+        outfile << "MEASUREMENT NUMBER " << i << ":\n";
+        outfile << "DISTANCE = " << distance << '\n';
+        outfile << "SPEED = " << speed << '\n' << std::endl;
+    }
+
 }
 
 
