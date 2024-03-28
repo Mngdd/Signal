@@ -34,6 +34,9 @@ class Receiver
 
         double distance();
         double distance_using_power();
+        
+        std::pair<double, double> mse(std::vector<double>);
+
     private:
         Vector3D coordinates;
         double current_energy;
@@ -42,5 +45,6 @@ class Receiver
         double delay_sum;
         double dist;
         int received_signals_count;
+
 };
 

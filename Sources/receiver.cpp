@@ -54,3 +54,18 @@ void Receiver::receive_signals(std::vector<Signal>& v_sign)
     else
         dist = delay_sum/received_signals_count*speed_of_light/2;
 }
+
+
+std::pair<double, double> Receiver::mse(std::vector<double> arr)
+{
+    double mean = 0.0;
+    for(auto c : arr) sm += c;
+    mean /= arr.size();
+
+    double sumSquaredDiff = 0;
+
+    for (int i = 0; i < arr.size(); ++i) 
+        sumSquaredDiff += std::pow(arr[i] - mean, 2);
+
+    return {std::pow((sumSquaredDiff / arr.size()) , 0.5) , mean};
+}
