@@ -8,7 +8,9 @@ class Vector3D;
 class Signal;
 class Radiator;
 class Receiver;
+class Maffler;
 
+extern Maffler mafflerenok;
 
 double distance(Object& object, Receiver& receiver);
 
@@ -41,3 +43,4 @@ class Receiver
         double dist;
         int received_signals_count;
 };
+
