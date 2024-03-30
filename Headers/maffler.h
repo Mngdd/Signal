@@ -20,5 +20,5 @@ public:
             double width_signal);
 
     Signal& noise_mc();
-
+    
 };
