@@ -1,24 +1,20 @@
-#include "vector3d.h"
-#include "signal.h"
-#include "receiver.h"
-#include "object.h"
 #include "../Headers/maffler.h"
-
+#include <random>
 
 Maffler::Maffler(
-            Signal::Signal& signal,
-            double noise_coeff, 
-            double temperature, 
-            double width_signal) 
+            double noise_percent) 
             : 
-            noise_coeff{noise_coeff},
-            temperature{temperature},
-            width_signal{width_signal} {}
+            noise_percent{noise_percent} {}
 
-Signal::Signal& Maffler::noise_mc(){
-    double noise = 1.38 * noise_coeff * temperature * width_signal * std::pow(10, -23);
-    signal.coordinates.x += noise;
-    signal.coordinates.y += noise;
-    signal.coordinates.z += noise;
-    return signal;
+void Maffler::noise_mc(double& power){
+    double noise = std::rand() % (1000);
+    noise = std::rand() / (20000.0);
+    int sign = std::rand() % 2;
+    if(sign % 2 == 0){
+        power += std::abs(noise);
+    } else {
+        power -= std::abs(noise);
+    }
 }
+
+Maffler mafflerenok(5);

@@ -3,6 +3,7 @@
 #include "../Headers/receiver.h"
 #include "../Headers/radiator.h"
 #include "../Headers/object.h"
+#include "../Headers/maffler.h"
 
 
 /*
@@ -33,6 +34,7 @@ double Receiver::distance() { return dist; }
 double Receiver::distance_using_power()
 {
     double Pt_div_Pr = radiated_power/received_power;
+    mafflerenok.noise_mc(Pt_div_Pr);
     return std::pow(Pt_div_Pr*((sigma*std::pow(wave_length,2))/(64*pow(PI,3)*L)),0.25);
 }
 
@@ -51,4 +53,19 @@ void Receiver::receive_signals(std::vector<Signal>& v_sign)
         dist = -1;
     else
         dist = delay_sum/received_signals_count*speed_of_light/2;
+}
+
+
+std::pair<double, double> Receiver::mse(std::vector<double> arr)
+{
+    double mean = 0.0;
+    for(auto c : arr) sm += c;
+    mean /= arr.size();
+
+    double sumSquaredDiff = 0;
+
+    for (int i = 0; i < arr.size(); ++i) 
+        sumSquaredDiff += std::pow(arr[i] - mean, 2);
+
+    return {std::pow((sumSquaredDiff / arr.size()) , 0.5) , mean};
 }

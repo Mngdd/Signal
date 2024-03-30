@@ -13,8 +13,6 @@
 
 using JSON = nlohmann::json;
 
-int number_of_measurements = 100;
-
 double speed_calculation(Radiator &radiator, Object &object, Receiver &receiver, double dt) {
     double l1, l2, l3;
     radiator.emit_signal(receiver, object);
@@ -30,7 +28,8 @@ double speed_calculation(Radiator &radiator, Object &object, Receiver &receiver,
     return (std::pow(l1 * l1 + l3 * l3 - 2 * l2 * l2, 0.5)) / (dt * pow(2, 0.5));
 }
 
-void simulate(const std::string &path) {
+void simulate(const std::string &path, const std::string &export_path = "$ABORT$",
+              const int number_of_measurements = 100) {
     // json unpacking
     std::ifstream f(path);
     if (!f.is_open()) {
@@ -69,18 +68,13 @@ void simulate(const std::string &path) {
 
     std::vector<Signal> vector_of_signals{};
 
-    // rad.emit_signal(vector_of_signals);
-    // obj.reflect(vector_of_signals);
-    // rec.receive_signals(vector_of_signals);
-
     obj.set_effective_reflection_surface(rec);
-
     rad.emit_signal(rec, obj);
 
     std::cout << ' ' <<
-    // rec.received_power << ' ' <<
-    // rec.L << ' ' <<
-    rec.sigma << ' ';
+              // rec.received_power << ' ' <<
+              // rec.L << ' ' <<
+              rec.sigma << ' ';
     // rec.wave_length << ' ' <<
     // rec.amplification_coefficient << '\n';
 
@@ -93,37 +87,33 @@ void simulate(const std::string &path) {
                                      rec, delta_t);
 
     std::cout << "$RESULT$" << distance << "$RESULT$" << speed <<
-                 "$RESULT$" << rec.sigma << "$RESULT$" << rec.wave_length <<
-                 "$RESULT$" << L << std::endl;
+              "$RESULT$" << rec.sigma << "$RESULT$" << rec.wave_length <<
+              "$RESULT$" << L << std::endl;
     // ВСЕГДА ПИШИТЕ ENDL И РАЗДЕЛЯЙТЕ ВВОД СПЕЦТЕКСТОМ ИНАЧЕ Я ВАС НАЙДУ И ЗАДУШУ
+    if (export_path != "$ABORT$") {
+        std::ofstream outfile(export_path);
+        outfile << "==========FILE_FOR_RECEIVED_MEASUREMENTS==========" << std::endl << std::endl;
 
-    std::ofstream outfile("../textfiles/measurements.txt");
-    outfile << "==========FILE_FOR_RECEIVED_MEASUREMENTS==========" << std::endl << std::endl;
-
-    for(int i = 1; i <= number_of_measurements; i++)
-    {
-        distance = rec.distance_using_power();
-        speed = speed_calculation(rad, obj, rec, delta_t);
-        outfile << "MEASUREMENT NUMBER " << i << ":\n";
-        outfile << "DISTANCE = " << distance << '\n';
-        outfile << "SPEED = " << speed << '\n' << std::endl;
+        for (int i = 1; i <= number_of_measurements; i++) {
+            distance = rec.distance_using_power();
+            speed = speed_calculation(rad, obj, rec, delta_t);
+            outfile << "MEASUREMENT NUMBER " << i << ":\n";
+            outfile << "DISTANCE = " << distance << '\n';
+            outfile << "SPEED = " << speed << '\n' << std::endl;
+        }
     }
 
 }
 
 
-
 int main(int argc, char *argv[]) // coords of obj, rad, rec
 {
-//    std::cout << argc << "\n";
-//    for (int i = 0; i < argc; ++i) {
-//    }
-//    std::cout << "\n";
-
-    if (argc != 2) {
-        throw std::invalid_argument("Expected 2, got " + std::to_string(argc) + " args!");
+    if (argc == 2) {
+        simulate(argv[1]);
+    } else if (argc == 4) {
+        simulate(argv[1], argv[2], atoi(argv[3]));
+    } else {
+        throw std::invalid_argument("Expected 2 or 4, got " + std::to_string(argc) + " args!");
     }
-
-    simulate(argv[1]);
     return 0;
 }

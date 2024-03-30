@@ -11,6 +11,7 @@ set(SOURCES
         Sources/receiver.cpp
         Sources/signal.cpp
         Sources/vector3d.cpp
+        Sources/maffler.cpp
 )
 
 set(HEADERS
@@ -19,6 +20,7 @@ set(HEADERS
         Headers/receiver.h
         Headers/signal.h
         Headers/vector3d.h
+        Headers/maffler.h
 )
 
 project(${TARGET} Signal)
