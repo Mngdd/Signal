@@ -213,6 +213,7 @@ class MainMenu(QMainWindow):
 
         plt.close(self.figure_plots)
         self.figure_plots.clear()
+
         abscissa = [i for i in range(11)]
         koef = ((self.data["RAD"]["E"] * self.data["RAD"]["AMP"] ** 2) /
                 ((4 * math_pi * self.distance) ** 2 * 4 * math_pi * self.L))
@@ -233,6 +234,7 @@ class MainMenu(QMainWindow):
         axes[1].set_title("Pr(lambda)")
         axes[1].set_xlabel('Pr')
         axes[1].set_ylabel('lambda')
+        self.fig_update_ico()
         self.figure_plots.show()
 
     def draw_scene(self):
@@ -241,6 +243,8 @@ class MainMenu(QMainWindow):
             return
 
         self.figure_scene.clear()
+        self.fig_update_ico()
+
         self.figure_scene.set_size_inches(4.8, 4.8)
         ax = self.figure_scene.add_subplot((0, 0.05, 1, 0.90), projection='3d', facecolor="lightgrey")
 
@@ -266,15 +270,6 @@ class MainMenu(QMainWindow):
         ax.set_aspect("equal")
         self.figure_scene.show()
 
-    def raise_err(self):
-        plt.close('all')
-
-        self.ERR_MSG.setStyleSheet(self.warn_stylesheet)
-        self.ERR_MSG.setText("Something went wrong! Please check the entered data...")
-        self.ERR_MSG.setVisible(True)
-        self.DIST_NUM.setText("NA")
-        self.VEL_NUM.setText("NA")
-
     def show_err_dialog(self, title, txt):
         QMessageBox.critical(
             self, title, txt,
@@ -282,6 +277,11 @@ class MainMenu(QMainWindow):
             defaultButton=QMessageBox.StandardButton.Ok,
         )
 
+    def fig_update_ico(self):
+        # funny icon and not that stupid cd icon
+        PATH_TO_ICON =pathlib.Path(os.path.dirname(__file__)).parent.__str__() + "\\UI\\rofls.png"
+        self.figure_plots.canvas.manager.window.setWindowIcon(QtGui.QIcon(PATH_TO_ICON))
+        self.figure_scene.canvas.manager.window.setWindowIcon(QtGui.QIcon(PATH_TO_ICON))
 
 def except_hook(cls, exception, traceback):
     sys.__excepthook__(cls, exception, traceback)
