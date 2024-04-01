@@ -9,20 +9,25 @@
 #include "Headers/radiator.h"
 #include "Headers/receiver.h"
 #include "Headers/signal.h"
+#include "Headers/maffler.h"
 #include "Libs/json.hpp"
 
 using JSON = nlohmann::json;
 
 double speed_calculation(Radiator &radiator, Object &object, Receiver &receiver, double dt) {
     double l1, l2, l3;
+    // Maffler mafflerenochek(5);
     radiator.emit_signal(receiver, object);
     l1 = receiver.distance_using_power();
+    mafflerenok.noise_mc(l1);
     object.update_position(dt);
     radiator.emit_signal(receiver, object);
     l2 = receiver.distance_using_power();
+    mafflerenok.noise_mc(l2);
     object.update_position(dt);
     radiator.emit_signal(receiver, object);
     l3 = receiver.distance_using_power();
+    mafflerenok.noise_mc(l3);
     object.update_position(dt);
 
     return (std::pow(l1 * l1 + l3 * l3 - 2 * l2 * l2, 0.5)) / (dt * pow(2, 0.5));
@@ -83,6 +88,7 @@ void simulate(const std::string &path, const std::string &export_path = "$ABORT$
     double delta_t = data["DELTA_TIME"].get<double>();
 
     double distance = rec.distance_using_power();
+    mafflerenok.noise_mc(distance); // temporary
     double speed = speed_calculation(rad, obj,
                                      rec, delta_t);
 
@@ -96,6 +102,7 @@ void simulate(const std::string &path, const std::string &export_path = "$ABORT$
 
         for (int i = 1; i <= number_of_measurements; i++) {
             distance = rec.distance_using_power();
+            mafflerenok.noise_mc(distance);
             speed = speed_calculation(rad, obj, rec, delta_t);
             outfile << "MEASUREMENT NUMBER " << i << ":\n";
             outfile << "DISTANCE = " << distance << '\n';
