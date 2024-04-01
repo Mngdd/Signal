@@ -106,8 +106,7 @@ void simulate(const std::string &path, const std::string &export_path = "$ABORT$
 }
 
 
-int main(int argc, char *argv[]) // coords of obj, rad, rec
-{
+int main(int argc, char *argv[]) {
     if (argc == 2) {
         simulate(argv[1]);
     } else if (argc == 4) {

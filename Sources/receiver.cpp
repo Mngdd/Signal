@@ -59,7 +59,8 @@ void Receiver::receive_signals(std::vector<Signal>& v_sign)
 std::pair<double, double> Receiver::mse(std::vector<double> arr)
 {
     double mean = 0.0;
-    for(auto c : arr) sm += c;
+    // FIXME: sm = ???
+    // for(auto c : arr) sm += c;
     mean /= arr.size();
 
     double sumSquaredDiff = 0;

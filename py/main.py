@@ -1,5 +1,8 @@
+import matplotlib.figure
 import matplotlib.pyplot as plt
 from math import pi as math_pi
+import numpy as np
+import random
 
 import os
 import sys
@@ -20,16 +23,21 @@ class MainMenu(QMainWindow):
         self.setWindowTitle('Signal')
         self.setWindowIcon(QtGui.QIcon('../UI/ico-white.png'))
 
-        self.data = {"RAD": {"COORD": (self.RAD_COORD_X.value(), self.RAD_COORD_Y.value(), self.RAD_COORD_Z.value()),
-                             "E": self.RAD_E.value(),
-                             "DIR": (self.RAD_DIR_X.value(), self.RAD_DIR_Y.value(), self.RAD_DIR_Z.value()),
-                             "AMP": self.RAD_AMP.value()},
-                     "OBJ": {"COORD": (self.OBJ_COORD_X.value(), self.OBJ_COORD_Y.value(), self.OBJ_COORD_Z.value()),
-                             "RADIUS": self.OBJ_RADIUS.value(), "REF_IND": self.OBJ_REF_IND.value(),
-                             "VEL": (self.OBJ_VEL_X.value(), self.OBJ_VEL_Y.value(), self.OBJ_VEL_Z.value())},
-                     "REC": {"COORD": (self.REC_COORD_X.value(), self.REC_COORD_Y.value(), self.REC_COORD_Z.value()),
-                             "CE": self.REC_CE.value()},
-                     "DELTA_TIME": self.DELTA_TIME.value()}
+        self.data = dict()
+        with open(pathlib.Path(__file__).parent.resolve().__str__().replace('\\',
+                                                                            '/') + "/STARTUP_INPUT.json") as json_file:
+            self.data = json.load(json_file)
+        self.push_data_to_fields()
+        # self.data = {"RAD": {"COORD": (self.RAD_COORD_X.value(), self.RAD_COORD_Y.value(), self.RAD_COORD_Z.value()),
+        #                      "E": self.RAD_E.value(),
+        #                      "DIR": (self.RAD_DIR_X.value(), self.RAD_DIR_Y.value(), self.RAD_DIR_Z.value()),
+        #                      "AMP": self.RAD_AMP.value()},
+        #              "OBJ": {"COORD": (self.OBJ_COORD_X.value(), self.OBJ_COORD_Y.value(), self.OBJ_COORD_Z.value()),
+        #                      "RADIUS": self.OBJ_RADIUS.value(), "REF_IND": self.OBJ_REF_IND.value(),
+        #                      "VEL": (self.OBJ_VEL_X.value(), self.OBJ_VEL_Y.value(), self.OBJ_VEL_Z.value())},
+        #              "REC": {"COORD": (self.REC_COORD_X.value(), self.REC_COORD_Y.value(), self.REC_COORD_Z.value()),
+        #                      "CE": self.REC_CE.value()},
+        #              "DELTA_TIME": self.DELTA_TIME.value()}
         self.distance = 0
         self.velocity = 0
         self.sigma = 0
@@ -41,6 +49,10 @@ class MainMenu(QMainWindow):
                     QTabBar::tab:selected {background: gray;}
                     QTabWidget>QWidget>QWidget{background: gray;}   
                     """
+        # посхалко
+        name = random.choices(["Mark down && skufidon", "nekit b == gnomie", "Signal"], weights=(1.5, 0.5, 98))[0]
+        self.setWindowTitle(name)
+
         self.setStyleSheet(stylesheet)
         self.setStyleSheet("""
         QMenuBar {
@@ -73,20 +85,20 @@ class MainMenu(QMainWindow):
         self.action_save.triggered.connect(self.save)
         self.action_load.triggered.connect(self.load)
         self.action_export.triggered.connect(self.export)
+        self.action_draw_plots.triggered.connect(self.draw_plots)
+        self.action_draw_scene.triggered.connect(self.draw_scene)
         self.ERR_MSG.setVisible(False)
+
+        self.figure_plots = matplotlib.pyplot.figure()  # заглушка
+        self.figure_scene = matplotlib.pyplot.figure(facecolor="lightgrey")
+        self.figure_scene.canvas.manager.set_window_title('Scene view')
 
     def save(self):
         try:
             with open(self.get_file_save_path('Json file (*.json)', 'input.json')[0], "w") as outfile:
                 json.dump(self.data, outfile)
         except Exception as err:
-            QMessageBox.critical(
-                self,
-                "ERROR",
-                f"failed to save file: {err}",
-                buttons=QMessageBox.StandardButton.Ok,
-                defaultButton=QMessageBox.StandardButton.Ok,
-            )
+            self.show_err_dialog("ERROR", f"failed to save file: {err}")
 
     def get_file_save_path(self, file_filter, name):
         return QFileDialog.getSaveFileName(
@@ -113,13 +125,7 @@ class MainMenu(QMainWindow):
 
             self.push_data_to_fields()
         except Exception as err:
-            QMessageBox.critical(
-                self,
-                "ERROR",
-                f"failed to load file: {err}",
-                buttons=QMessageBox.StandardButton.Ok,
-                defaultButton=QMessageBox.StandardButton.Ok,
-            )
+            self.show_err_dialog("ERROR", f"failed to load file: {err}")
 
     def push_data_to_fields(self):
         for key in self.data:
@@ -146,10 +152,8 @@ class MainMenu(QMainWindow):
 
         self.call_cpp(self.get_file_save_path('Text file (*.txt)', 'exported.txt')[0], str(dialog.intValue()))
 
-
     def closeEvent(self, event):
-        print("bye")
-        plt.close()
+        plt.close('all')
         event.accept()  # let the window close
 
     def calculate(self):
@@ -170,25 +174,26 @@ class MainMenu(QMainWindow):
 
         if len(err) != 0 or str(self.distance) in ("nan", "inf") or str(self.velocity) in ("nan", "inf"):
             self.raise_err()
-            return
-        if str(self.distance) == "-1":
+        elif str(self.distance) == "-1":
             self.ERR_MSG.setStyleSheet(self.warn_stylesheet)
             self.ERR_MSG.setText("No objects found...")
             self.ERR_MSG.setVisible(True)
             self.DIST_NUM.setText("NA")
             self.VEL_NUM.setText("NA")
-            return
-        self.DIST_NUM.setText(str(self.distance))
-        self.VEL_NUM.setText(str(self.velocity))
-        self.draw_plots()
+        else:
+            self.DIST_NUM.setText(str(self.distance))
+            self.VEL_NUM.setText(str(self.velocity))
+        try:
+            os.remove(self.json_abs_path)
+        except ...:
+            ...
 
     def call_cpp(self, path="", amount=""):
         with open(self.json_abs_path, "w") as outfile:
             json.dump(self.data, outfile)
             print("wrote file at", self.json_abs_path)
-        if len(amount)*len(path):
+        if len(amount) * len(path):
             self.json_abs_path += ' ' + path + ' ' + amount
-            print('nigganigganigganigganigganigganigga')
         res = subprocess.run(f"../Signal.exe {self.json_abs_path}",
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
@@ -196,19 +201,26 @@ class MainMenu(QMainWindow):
         # wait for the process to terminate
         out, err, errcode = res.stdout.strip().decode(), res.stderr, res.returncode
         print(out, len(err), err, errcode)
-        if not len(amount)*len(path):
+        if not len(amount) * len(path):
             tmp = [float(i) for i in out.split("$RESULT$")[1:]]
             self.distance, self.velocity, self.sigma, self.wave_length, self.L = tmp
         return out, err, errcode
 
     def draw_plots(self):
+        if "NA" in (self.VEL_NUM.text(), self.DIST_NUM.text()):
+            self.show_err_dialog("ERROR", "Unable to draw without correct calculations!")
+            return
+
+        plt.close(self.figure_plots)
+        self.figure_plots.clear()
         abscissa = [i for i in range(11)]
         koef = ((self.data["RAD"]["E"] * self.data["RAD"]["AMP"] ** 2) /
                 ((4 * math_pi * self.distance) ** 2 * 4 * math_pi * self.L))
         pr_sigma = [koef * self.wave_length ** 2 * i for i in range(11)]
         pr_lambda = [koef * i ** 2 * self.sigma for i in range(11)]
 
-        figure, axes = plt.subplots(1, 2, figsize=(12.2, 4.8))
+        self.figure_plots, axes = plt.subplots(1, 2, figsize=(12.2, 4.8))
+        self.figure_plots.canvas.manager.set_window_title('Plots view')
         axes = axes.flatten()
 
         axes[0].plot(abscissa, pr_sigma)
@@ -221,15 +233,54 @@ class MainMenu(QMainWindow):
         axes[1].set_title("Pr(lambda)")
         axes[1].set_xlabel('Pr')
         axes[1].set_ylabel('lambda')
-        plt.show()
+        self.figure_plots.show()
+
+    def draw_scene(self):
+        if "NA" in (self.VEL_NUM.text(), self.DIST_NUM.text()):
+            self.show_err_dialog("ERROR", "Unable to draw without correct calculations!")
+            return
+
+        self.figure_scene.clear()
+        self.figure_scene.set_size_inches(4.8, 4.8)
+        ax = self.figure_scene.add_subplot((0, 0.05, 1, 0.90), projection='3d', facecolor="lightgrey")
+
+        # FIXME: я не ебу че от меня хочет буча я просто вкинул на рандом сферы
+        list_center = [self.data["OBJ"]["COORD"], self.data["REC"]["COORD"], self.data["RAD"]["COORD"],
+                       self.data["RAD"]["COORD"]]
+        list_radius = [self.data["OBJ"]["RADIUS"], 1, 1, self.distance]
+        list_color_info = [('r', 0.5), ('g', 0.5), ('b', 0.5), ('yellow', 0.2)]
+        min_, max_ = float("inf"), 0
+        for c, r, draw in zip(list_center, list_radius, list_color_info):
+            # draw sphere
+            u, v = np.mgrid[0:2 * np.pi:20j, 0:np.pi:20j]
+            x = r * np.cos(u) * np.sin(v)
+            y = r * np.sin(u) * np.sin(v)
+            z = r * np.cos(v)
+            min_ = min(np.amin(x), np.amin(y), np.amin(z), min_)  # lowest number in the array
+            max_ = max(np.amax(x), np.amax(y), np.amax(z), max_)  # lowest number in the array
+            ax.plot_surface(x - c[0], y - c[1], z - c[2], color=draw[0], alpha=draw[1])
+
+        ax.set_xlim3d(min_, max_)
+        ax.set_ylim3d(min_, max_)
+        ax.set_zlim3d(min_, max_)
+        ax.set_aspect("equal")
+        self.figure_scene.show()
 
     def raise_err(self):
-        plt.close()
+        plt.close('all')
+
         self.ERR_MSG.setStyleSheet(self.warn_stylesheet)
         self.ERR_MSG.setText("Something went wrong! Please check the entered data...")
         self.ERR_MSG.setVisible(True)
         self.DIST_NUM.setText("NA")
         self.VEL_NUM.setText("NA")
+
+    def show_err_dialog(self, title, txt):
+        QMessageBox.critical(
+            self, title, txt,
+            buttons=QMessageBox.StandardButton.Ok,
+            defaultButton=QMessageBox.StandardButton.Ok,
+        )
 
 
 def except_hook(cls, exception, traceback):
@@ -243,7 +294,7 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = MainMenu()
     print(app.style())
-    ex.setFixedSize(1200, 635)
+    ex.setFixedSize(1200, 655)
 
     # qdarktheme.setup_theme()
     qdarktheme.setup_theme(custom_colors={"primary": "#FFA317"})
