@@ -14,25 +14,6 @@
 
 using JSON = nlohmann::json;
 
-double speed_calculation(Radiator &radiator, Object &object, Receiver &receiver, double dt) {
-    double l1, l2, l3;
-    // Maffler mafflerenochek(5);
-    radiator.emit_signal(receiver, object);
-    l1 = receiver.distance_using_power();
-    // mafflerenok.noise_mc(l1);
-    object.update_position(dt);
-    radiator.emit_signal(receiver, object);
-    l2 = receiver.distance_using_power();
-    // mafflerenok.noise_mc(l2);
-    object.update_position(dt);
-    radiator.emit_signal(receiver, object);
-    l3 = receiver.distance_using_power();
-    // mafflerenok.noise_mc(l3);
-    object.update_position(dt);
-
-    return (std::pow(std::abs(l1 * l1 + l3 * l3 - 2 * l2 * l2), 0.5)) / (dt * pow(2, 0.5));
-}
-
 void simulate(const std::string &path, const std::string &export_path = "$ABORT$",
               const int number_of_measurements = 100) {
     // json unpacking
@@ -76,21 +57,11 @@ void simulate(const std::string &path, const std::string &export_path = "$ABORT$
     obj.set_effective_reflection_surface(rec);
     rad.emit_signal(rec, obj);
 
-    std::cout << ' ' <<
-              // rec.received_power << ' ' <<
-              // rec.L << ' ' <<
-              rec.sigma << ' ';
-    // rec.wave_length << ' ' <<
-    // rec.amplification_coefficient << '\n';
-
-    // double distance = rec.distance();
-
     double delta_t = data["DELTA_TIME"].get<double>();
 
     double distance = rec.distance_using_power();
     // mafflerenok.noise_mc(distance); // temporary
-    double speed = speed_calculation(rad, obj,
-                                     rec, delta_t);
+    double speed = rec.speed_calculation(rad, obj, delta_t);
 
     std::cout << "$RESULT$" << distance << "$RESULT$" << speed <<
               "$RESULT$" << rec.sigma << "$RESULT$" << rec.wave_length <<
@@ -102,8 +73,8 @@ void simulate(const std::string &path, const std::string &export_path = "$ABORT$
 
         for (int i = 1; i <= number_of_measurements; i++) {
             distance = rec.distance_using_power();
-            mafflerenok.noise_mc(distance);
-            speed = speed_calculation(rad, obj, rec, delta_t);
+            // mafflerenok.noise_mc(distance);
+            speed = rec.speed_calculation(rad, obj, delta_t);
             outfile << "MEASUREMENT NUMBER " << i << ":\n";
             outfile << "DISTANCE = " << distance << '\n';
             outfile << "SPEED = " << speed << '\n' << std::endl;

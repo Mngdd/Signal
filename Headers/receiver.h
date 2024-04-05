@@ -33,6 +33,7 @@ class Receiver
 
         double distance();
         double distance_using_power();
+        double speed_calculation(Radiator& rad, Object& object, double dt);
         
         std::pair<double, double> mse(std::vector<double>);
 
