@@ -11,5 +11,3 @@ public:
 private:
     double noise_percent;
 };
-
-// extern Maffler mafflerenok;

@@ -7,7 +7,7 @@ Maffler::Maffler(
             noise_percent{noise_percent} {}
 
 void Maffler::noise_mc(double& power){
-    double noise = ((std::rand() % 1000) / 100000.0) * noise_percent;
+    double noise = ((std::rand() % 1000) / 1000.0*100.0) * noise_percent;
     int sign = std::rand() % 2;
     if(sign % 2 == 0){
         power += std::abs(noise);
@@ -15,5 +15,3 @@ void Maffler::noise_mc(double& power){
         power -= std::abs(noise);
     }
 }
-
-// Maffler mafflerenok(5);
