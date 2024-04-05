@@ -12,10 +12,10 @@ Receiver::Receiver(Vector3D coordinates_, double critical_energy_) :
 
 double Receiver::distance() { return dist; }
 
-double Receiver::distance_using_power()
+double Receiver::distance_using_power(Muffler& muffler)
 {
     double Pt_div_Pr = radiated_power/received_power;
-    //mafflerenok.noise_mc(Pt_div_Pr);
+    muffler.noise_mc(Pt_div_Pr);
     return std::pow(Pt_div_Pr*((std::pow(amplification_coefficient, 2)*sigma*std::pow(wave_length,2))/(64*pow(PI,3)*L)),0.25);
 }
 

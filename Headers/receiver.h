@@ -8,12 +8,10 @@ class Vector3D;
 class Signal;
 class Radiator;
 class Receiver;
-class Maffler;
+class Muffler;
 
 
 double distance(Object& object, Receiver& receiver);
-
-// double speed_calculation(Radiator& radiator, Object& object, Receiver& receiver, double dt);
 
 class Receiver
 {
@@ -32,7 +30,7 @@ class Receiver
         void receive_signals(std::vector<Signal>& v_sign);
 
         double distance();
-        double distance_using_power();
+        double distance_using_power(Muffler& muffler);
         double speed_calculation(Radiator& rad, Object& object, double dt);
         
         std::pair<double, double> mse(std::vector<double>);
