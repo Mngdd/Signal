@@ -79,7 +79,6 @@ void simulate(const std::string &path, const std::string &export_path = "$ABORT$
             outfile << "SPEED = " << speed << '\n' << std::endl;
         }
     }
-
 }
 
 
