@@ -19,18 +19,18 @@ double speed_calculation(Radiator &radiator, Object &object, Receiver &receiver,
     // Maffler mafflerenochek(5);
     radiator.emit_signal(receiver, object);
     l1 = receiver.distance_using_power();
-    mafflerenok.noise_mc(l1);
+    // mafflerenok.noise_mc(l1);
     object.update_position(dt);
     radiator.emit_signal(receiver, object);
     l2 = receiver.distance_using_power();
-    mafflerenok.noise_mc(l2);
+    // mafflerenok.noise_mc(l2);
     object.update_position(dt);
     radiator.emit_signal(receiver, object);
     l3 = receiver.distance_using_power();
-    mafflerenok.noise_mc(l3);
+    // mafflerenok.noise_mc(l3);
     object.update_position(dt);
 
-    return (std::pow(l1 * l1 + l3 * l3 - 2 * l2 * l2, 0.5)) / (dt * pow(2, 0.5));
+    return (std::pow(std::abs(l1 * l1 + l3 * l3 - 2 * l2 * l2), 0.5)) / (dt * pow(2, 0.5));
 }
 
 void simulate(const std::string &path, const std::string &export_path = "$ABORT$",
@@ -88,7 +88,7 @@ void simulate(const std::string &path, const std::string &export_path = "$ABORT$
     double delta_t = data["DELTA_TIME"].get<double>();
 
     double distance = rec.distance_using_power();
-    mafflerenok.noise_mc(distance); // temporary
+    // mafflerenok.noise_mc(distance); // temporary
     double speed = speed_calculation(rad, obj,
                                      rec, delta_t);
 

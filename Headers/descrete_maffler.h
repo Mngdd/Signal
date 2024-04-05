@@ -14,10 +14,12 @@ public:
     double temperature = 273.0;
     double width_signal = 0.0;
 
-    Discrete_Maffler(Signal& signal,
-            double noise_coeff, 
-            double temperature, 
-            double width_signal);
+    Signal signal;
+
+    Discrete_Maffler(Signal& signal_,
+            double noise_coeff_, 
+            double temperature_, 
+            double width_signal_);
 
     Signal& noise_mc();
 

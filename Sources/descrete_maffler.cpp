@@ -5,10 +5,10 @@
 #include "../Headers/descrete_maffler.h"
 
 
-Discrete_Maffler::Discrete_Maffler(Signal::Signal& signal, double noise_coeff, double temperature, double width_signal) : 
-    noise_coeff{noise_coeff}, temperature{temperature}, width_signal{width_signal} {}
+Discrete_Maffler::Discrete_Maffler(Signal& signal_, double noise_coeff_, double temperature_, double width_signal_) : 
+    noise_coeff{noise_coeff_}, temperature{temperature_}, width_signal{width_signal_}, signal{signal_} {}
 
-Signal::Signal& Discrete_Maffler::noise_mc(){
+Signal& Discrete_Maffler::noise_mc(){
     double noise = 1.38 * noise_coeff * temperature * width_signal * std::pow(10, -23);
     signal.coordinates.x += noise;
     signal.coordinates.y += noise;

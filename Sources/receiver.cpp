@@ -34,7 +34,7 @@ double Receiver::distance() { return dist; }
 double Receiver::distance_using_power()
 {
     double Pt_div_Pr = radiated_power/received_power;
-    mafflerenok.noise_mc(Pt_div_Pr);
+    //mafflerenok.noise_mc(Pt_div_Pr);
     return std::pow(Pt_div_Pr*((sigma*std::pow(wave_length,2))/(64*pow(PI,3)*L)),0.25);
 }
 
