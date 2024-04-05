@@ -2,10 +2,10 @@
 
 
 
-class Maffler
+class Muffler
 {
 public:
-    Maffler(double noise_percent);
+    Muffler(double noise_percent);
     void noise_mc(double& power);
 
 private:

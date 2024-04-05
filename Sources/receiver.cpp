@@ -3,7 +3,7 @@
 #include "../Headers/receiver.h"
 #include "../Headers/radiator.h"
 #include "../Headers/object.h"
-#include "../Headers/maffler.h"
+#include "../Headers/muffler.h"
 
 
 Receiver::Receiver(Vector3D coordinates_, double critical_energy_) :
