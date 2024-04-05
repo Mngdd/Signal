@@ -50,17 +50,17 @@ std::pair<double, double> Receiver::mse(std::vector<double> arr)
     return {std::pow((sumSquaredDiff / arr.size()) , 0.5) , mean};
 }
 
-double Receiver::speed_calculation(Radiator& rad, Object& object, double dt)
+double Receiver::speed_calculation(Radiator& rad, Object& object, Muffler& muffler, double dt)
 {
     double l1, l2, l3;
     rad.emit_signal(*this, object);
-    l1 = distance_using_power();
+    l1 = distance_using_power(muffler);
     object.update_position(dt);
     rad.emit_signal(*this, object);
-    l2 = distance_using_power();
+    l2 = distance_using_power(muffler);
     object.update_position(dt);
     rad.emit_signal(*this, object);
-    l3 = distance_using_power();
+    l3 = distance_using_power(muffler);
     object.update_position(dt);
 
     return (std::pow(l1*l1 + l3*l3 - 2*l2*l2, 0.5))/dt*pow(2,0.5);

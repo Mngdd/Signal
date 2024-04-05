@@ -5,7 +5,7 @@
 class Muffler
 {
 public:
-    Muffler(double noise_percent);
+    Muffler(double noise_percent_);
     void noise_mc(double& power);
 
 private:

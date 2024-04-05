@@ -31,7 +31,7 @@ class Receiver
 
         double distance();
         double distance_using_power(Muffler& muffler);
-        double speed_calculation(Radiator& rad, Object& object, double dt);
+        double speed_calculation(Radiator& rad, Object& object, Muffler& muffler, double dt);
         
         std::pair<double, double> mse(std::vector<double>);
 

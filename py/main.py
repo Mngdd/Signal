@@ -204,7 +204,7 @@ class MainMenu(QMainWindow):
         print(out, len(err), err, errcode)
         if not len(amount) * len(path):
             tmp = [float(i) for i in out.split("$RESULT$")[1:]]
-            self.distance, self.velocity, self.sigma, self.wave_length, self.L, self.REAL_distance = tmp
+            self.distance, self.velocity, self.sigma, self.wave_length, self.L = tmp
         return out, err, errcode
 
     def draw_plots(self):

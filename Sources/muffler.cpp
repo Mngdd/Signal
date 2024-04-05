@@ -1,10 +1,10 @@
 #include "../Headers/muffler.h"
 #include <random>
 
-Muffler::muffler(
-            double noise_percent) 
+Muffler::Muffler(
+            double noise_percent_) 
             : 
-            noise_percent{noise_percent} {}
+            noise_percent{noise_percent_} {}
 
 void Muffler::noise_mc(double& power){
     double noise = ((std::rand() % 1000) / 1000.0*100.0) * noise_percent;

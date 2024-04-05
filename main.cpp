@@ -52,15 +52,16 @@ void simulate(const std::string &path, const std::string &export_path = "$ABORT$
                           data["RL"]["COORD"][2].get<double>()},
                  data["RL"]["CE"].get<double>()};
 
+    Muffler muf{data["DISTORTION_PERCENT"].get<double>()};
+
 
     obj.set_effective_reflection_surface(rec);
     rad.emit_signal(rec, obj);
 
     double delta_t = data["DELTA_TIME"].get<double>();
 
-    double muffled_distance = rec.distance_using_power();
-    // mafflerenok.noise_mc(distance); // temporary
-    double speed = rec.speed_calculation(rad, obj, delta_t);
+    double muffled_distance = rec.distance_using_power(muf);
+    double speed = rec.speed_calculation(rad, obj, muf,  delta_t);
 
     std::cout << "$RESULT$" << muffled_distance << "$RESULT$" << speed <<
               "$RESULT$" << rec.sigma << "$RESULT$" << rec.wave_length <<
@@ -71,9 +72,8 @@ void simulate(const std::string &path, const std::string &export_path = "$ABORT$
         outfile << "==========FILE_FOR_RECEIVED_MEASUREMENTS==========" << std::endl << std::endl;
 
         for (int i = 1; i <= number_of_measurements; i++) {
-            muffled_distance = rec.distance_using_power();
-            // mafflerenok.noise_mc(distance);
-            speed = rec.speed_calculation(rad, obj, delta_t);
+            muffled_distance = rec.distance_using_power(muf);
+            speed = rec.speed_calculation(rad, obj, muf, delta_t);
             outfile << "MEASUREMENT NUMBER " << i << ":\n";
             outfile << "DISTANCE = " << muffled_distance << '\n';
             outfile << "SPEED = " << speed << '\n' << std::endl;
