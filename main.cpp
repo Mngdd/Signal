@@ -51,8 +51,8 @@ void simulate(const std::string &path, const std::string &export_path = "$ABORT$
                           data["REC"]["COORD"][1].get<double>(),
                           data["REC"]["COORD"][2].get<double>()},
                  data["REC"]["CE"].get<double>()};
+    Muffler muf{}
 
-    std::vector<Signal> vector_of_signals{};
 
     obj.set_effective_reflection_surface(rec);
     rad.emit_signal(rec, obj);
@@ -60,7 +60,6 @@ void simulate(const std::string &path, const std::string &export_path = "$ABORT$
     double delta_t = data["DELTA_TIME"].get<double>();
 
     double distance = rec.distance_using_power();
-    // mafflerenok.noise_mc(distance); // temporary
     double speed = rec.speed_calculation(rad, obj, delta_t);
 
     std::cout << "$RESULT$" << distance << "$RESULT$" << speed <<
