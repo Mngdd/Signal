@@ -2,6 +2,7 @@
 #include "../Headers/object.h"
 #include "../Headers/signal.h"
 #include "../Headers/receiver.h"
+#include <iostream>
 
 
 Object::Object(Vector3D coordinates, double radius_, double refractive_index_, Vector3D speed_vector_) :

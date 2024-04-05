@@ -24,18 +24,18 @@ void simulate(const std::string &path, const std::string &export_path = "$ABORT$
     std::cout << "Successfully opened file." << std::endl;
 
     JSON data = JSON::parse(f);
-    std::cout << data["RAD"]["E"].get<double>() << std::endl;
+    std::cout << data["RL"]["E"].get<double>() << std::endl;
     // --------------
     double L = 1;
-    Radiator rad{data["RAD"]["E"].get<double>(),
-                 Vector3D{data["RAD"]["COORD"][0].get<double>(),
-                          data["RAD"]["COORD"][1].get<double>(),
-                          data["RAD"]["COORD"][2].get<double>()},
-                 Vector3D{data["RAD"]["DIR"][0].get<double>(),
-                          data["RAD"]["DIR"][1].get<double>(),
-                          data["RAD"]["DIR"][2].get<double>()},
+    Radiator rad{data["RL"]["E"].get<double>(),
+                 Vector3D{data["RL"]["COORD"][0].get<double>(),
+                          data["RL"]["COORD"][1].get<double>(),
+                          data["RL"]["COORD"][2].get<double>()},
+                 Vector3D{data["RL"]["DIR"][0].get<double>(),
+                          data["RL"]["DIR"][1].get<double>(),
+                          data["RL"]["DIR"][2].get<double>()},
                  L,
-                 data["RAD"]["AMP"].get<double>()
+                 data["RL"]["AMP"].get<double>()
     };
 
     Object obj{Vector3D{data["OBJ"]["COORD"][0].get<double>(),
@@ -47,11 +47,10 @@ void simulate(const std::string &path, const std::string &export_path = "$ABORT$
                         data["OBJ"]["VEL"][1].get<double>(),
                         data["OBJ"]["VEL"][2].get<double>()}};
 
-    Receiver rec{Vector3D{data["REC"]["COORD"][0].get<double>(),
-                          data["REC"]["COORD"][1].get<double>(),
-                          data["REC"]["COORD"][2].get<double>()},
-                 data["REC"]["CE"].get<double>()};
-    Muffler muf{}
+    Receiver rec{Vector3D{data["RL"]["COORD"][0].get<double>(),
+                          data["RL"]["COORD"][1].get<double>(),
+                          data["RL"]["COORD"][2].get<double>()},
+                 data["RL"]["CE"].get<double>()};
 
 
     obj.set_effective_reflection_surface(rec);
@@ -59,10 +58,11 @@ void simulate(const std::string &path, const std::string &export_path = "$ABORT$
 
     double delta_t = data["DELTA_TIME"].get<double>();
 
-    double distance = rec.distance_using_power();
+    double muffled_distance = rec.distance_using_power();
+    // mafflerenok.noise_mc(distance); // temporary
     double speed = rec.speed_calculation(rad, obj, delta_t);
 
-    std::cout << "$RESULT$" << distance << "$RESULT$" << speed <<
+    std::cout << "$RESULT$" << muffled_distance << "$RESULT$" << speed <<
               "$RESULT$" << rec.sigma << "$RESULT$" << rec.wave_length <<
               "$RESULT$" << L << std::endl;
     // ВСЕГДА ПИШИТЕ ENDL И РАЗДЕЛЯЙТЕ ВВОД СПЕЦТЕКСТОМ ИНАЧЕ Я ВАС НАЙДУ И ЗАДУШУ
@@ -71,11 +71,11 @@ void simulate(const std::string &path, const std::string &export_path = "$ABORT$
         outfile << "==========FILE_FOR_RECEIVED_MEASUREMENTS==========" << std::endl << std::endl;
 
         for (int i = 1; i <= number_of_measurements; i++) {
-            distance = rec.distance_using_power();
+            muffled_distance = rec.distance_using_power();
             // mafflerenok.noise_mc(distance);
             speed = rec.speed_calculation(rad, obj, delta_t);
             outfile << "MEASUREMENT NUMBER " << i << ":\n";
-            outfile << "DISTANCE = " << distance << '\n';
+            outfile << "DISTANCE = " << muffled_distance << '\n';
             outfile << "SPEED = " << speed << '\n' << std::endl;
         }
     }
