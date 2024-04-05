@@ -1,6 +1,6 @@
 # Signal
 
-![tmp](https://github.com/Mngdd/Signal/assets/74361463/1672101d-1c01-48ef-baab-496c6aaca348)
+![Screenshot_1](https://github.com/Mngdd/Signal/assets/74361463/9a24c2cd-9669-4335-8f69-696c66026ba5)
 
 
 ## Вывод формул by jew
