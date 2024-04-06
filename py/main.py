@@ -260,9 +260,10 @@ class MainMenu(QMainWindow):
                                   for i in range(3)]) ** 0.5
         list_center = [self.data["OBJ"]["COORD"], self.data["RL"]["COORD"], self.data["RL"]["COORD"]]
         list_radius = [self.data["OBJ"]["RADIUS"], 1, self.REAL_distance]
+        names = ["object", "RLS", "distance radius"]
         list_color_info = [('r', 0.8), ('b', 0.9), ('yellow', 0.2)]
         min_, max_ = float("inf"), 0
-        for c, r, draw in zip(list_center, list_radius, list_color_info):
+        for name_, c, r, draw in zip(names, list_center, list_radius, list_color_info):
             # draw sphere
             u, v = np.mgrid[0:2 * np.pi:20j, 0:np.pi:20j]
             x = r * np.cos(u) * np.sin(v)
@@ -270,12 +271,13 @@ class MainMenu(QMainWindow):
             z = r * np.cos(v)
             min_ = min(np.amin(x), np.amin(y), np.amin(z), min_)  # lowest number in the array
             max_ = max(np.amax(x), np.amax(y), np.amax(z), max_)  # lowest number in the array
-            ax.plot_surface(x - c[0], y - c[1], z - c[2], color=draw[0], alpha=draw[1])
+            ax.plot_surface(x - c[0], y - c[1], z - c[2], color=draw[0], alpha=draw[1], label=name_)
 
         ax.set_xlim3d(min_, max_)
         ax.set_ylim3d(min_, max_)
         ax.set_zlim3d(min_, max_)
         ax.set_aspect("equal")
+        ax.legend()
         self.figure_scene.show()
 
     def show_err_dialog(self, title, txt):
