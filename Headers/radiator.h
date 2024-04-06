@@ -18,9 +18,9 @@ class Radiator
         void emit_signal(Receiver& receiver, Object& object);
 
     private:
-        double energy;
-        double wave_length;
-        double L;
+        double energy ;
+        double wave_length ;
+        double L ;
         double amplification_coefficient;
         Vector3D coordinates;
         Vector3D direction_vector;

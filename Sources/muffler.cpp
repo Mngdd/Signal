@@ -7,7 +7,7 @@ Muffler::Muffler(
             noise_percent{noise_percent_} {}
 
 void Muffler::noise_mc(double& power){
-    double noise = ((std::rand() % 1000) / 1000.0*100.0) * noise_percent;
+    double noise = ((std::rand() % 1000) / (1000.0)) * noise_percent * power;
     int sign = std::rand() % 2;
     if(sign % 2 == 0){
         power += std::abs(noise);

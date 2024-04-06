@@ -4,7 +4,7 @@
 #include "../Headers/radiator.h"
 #include "../Headers/object.h"
 #include "../Headers/muffler.h"
-
+#include <iostream>
 
 Receiver::Receiver(Vector3D coordinates_, double critical_energy_) :
     coordinates{coordinates_}, critical_energy{critical_energy_}, delay_sum{0}, average_delay{0},
@@ -14,8 +14,8 @@ double Receiver::distance() { return dist; }
 
 double Receiver::distance_using_power(Muffler& muffler)
 {
+    muffler.noise_mc(received_power);
     double Pt_div_Pr = radiated_power/received_power;
-    muffler.noise_mc(Pt_div_Pr);
     return std::pow(Pt_div_Pr*((std::pow(amplification_coefficient, 2)*sigma*std::pow(wave_length,2))/(64*pow(PI,3)*L)),0.25);
 }
 
@@ -44,7 +44,7 @@ std::pair<double, double> Receiver::mse(std::vector<double> arr)
 
     double sumSquaredDiff = 0;
 
-    for (int i = 0; i < arr.size(); ++i) 
+    for (size_t i = 0; i < arr.size(); ++i) 
         sumSquaredDiff += std::pow(arr[i] - mean, 2);
 
     return {std::pow((sumSquaredDiff / arr.size()) , 0.5) , mean};
@@ -63,5 +63,5 @@ double Receiver::speed_calculation(Radiator& rad, Object& object, Muffler& muffl
     l3 = distance_using_power(muffler);
     object.update_position(dt);
 
-    return (std::pow(l1*l1 + l3*l3 - 2*l2*l2, 0.5))/dt*pow(2,0.5);
+    return (std::pow(std::abs(l1*l1 + l3*l3 - 2*l2*l2), 0.5))/dt*pow(2,0.5);
 }
