@@ -61,9 +61,9 @@ void simulate(const std::string &path, const std::string &export_path = "$ABORT$
     double delta_t = data["DELTA_TIME"].get<double>();
 
     double muffled_distance = rec.distance_using_power(muf);
-    double speed = rec.speed_calculation(rad, obj, muf,  delta_t);
     Vector3D dir_to_obj_vector = dir_to_obj(obj, rec);
     Vector3D obj_coords = rec.coordinates_using_power(dir_to_obj_vector, muf);
+    double speed = rec.speed_calculation(rad, obj, muf,  delta_t);
 
     std::cout << "$RESULT$" << muffled_distance << "$RESULT$" << speed <<
               "$RESULT$" << rec.sigma << "$RESULT$" << rec.wave_length <<
