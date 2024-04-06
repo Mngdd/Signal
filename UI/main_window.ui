@@ -906,7 +906,7 @@
             <number>4</number>
            </property>
            <property name="maximum">
-            <double>100000000000.000000000000000</double>
+            <double>100.000000000000000</double>
            </property>
            <property name="value">
             <double>1.000000000000000</double>
