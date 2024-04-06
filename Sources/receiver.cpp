@@ -19,6 +19,12 @@ double Receiver::distance_using_power(Muffler& muffler)
     return std::pow(Pt_div_Pr*((std::pow(amplification_coefficient, 2)*sigma*std::pow(wave_length,2))/(64*pow(PI,3)*L)),0.25);
 }
 
+double Receiver::distance_using_power()
+{
+    double Pt_div_Pr = radiated_power/received_power;
+    return std::pow(Pt_div_Pr*((std::pow(amplification_coefficient, 2)*sigma*std::pow(wave_length,2))/(64*pow(PI,3)*L)),0.25);
+}
+
 void Receiver::receive_signals(std::vector<Signal>& v_sign)
 {
     for(int i = v_sign.size()-1; i >= 0; i--)
@@ -63,5 +69,6 @@ double Receiver::speed_calculation(Radiator& rad, Object& object, Muffler& muffl
     l3 = distance_using_power(muffler);
     object.update_position(dt);
 
-    return (std::pow(std::abs(l1*l1 + l3*l3 - 2*l2*l2), 0.5))/dt*pow(2,0.5);
+    double speed = (std::pow(std::abs(l1*l1 + l3*l3 - 2*l2*l2), 0.5))/dt*pow(0.5,0.5);
+    return speed;
 }
