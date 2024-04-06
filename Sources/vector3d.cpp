@@ -24,6 +24,23 @@ Vector3D operator-(Vector3D v1, Vector3D v2)
     return v1 + (-v2);
 }
 
+Vector3D operator*(double coefficient, Vector3D v)
+{
+    return {v.x*coefficient, v.y*coefficient, v.z*coefficient};
+}
+
+Vector3D operator*(Vector3D v, double coefficient)
+{
+    return coefficient*v;
+}
+
+Vector3D operator/(Vector3D v, double coefficient)
+{
+    if(coefficient == 0)
+        throw std::runtime_error("division by zero");
+    return (1/coefficient)*v;
+}
+
 bool can_collide(Vector3D v1, Vector3D v2)
 {
     if((v1.x == 0) && (v1.y == 0) && (v1.z == 0))

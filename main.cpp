@@ -62,8 +62,12 @@ void simulate(const std::string &path, const std::string &export_path = "$ABORT$
 
     double muffled_distance = rec.distance_using_power(muf);
     double speed = rec.speed_calculation(rad, obj, muf,  delta_t);
+    Vector3D dir_to_obj_vector = dir_to_obj(obj, rec);
+    Vector3D obj_coords = rec.coordinates_using_power(dir_to_obj_vector, muf);
 
     std::cout << "$RESULT$" << muffled_distance << "$RESULT$" << speed <<
+              // "$RESULT$" << obj_coords.x << "$RESULT$" << obj_coords.y <<
+              // "$RESULT$" << obj_coords.z <<
               "$RESULT$" << rec.sigma << "$RESULT$" << rec.wave_length <<
               "$RESULT$" << L << std::endl;
     // ВСЕГДА ПИШИТЕ ENDL И РАЗДЕЛЯЙТЕ ВВОД СПЕЦТЕКСТОМ ИНАЧЕ Я ВАС НАЙДУ И ЗАДУШУ

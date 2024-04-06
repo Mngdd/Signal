@@ -25,6 +25,12 @@ double Receiver::distance_using_power()
     return std::pow(Pt_div_Pr*((std::pow(amplification_coefficient, 2)*sigma*std::pow(wave_length,2))/(64*pow(PI,3)*L)),0.25);
 }
 
+Vector3D Receiver::coordinates_using_power(Vector3D direction_vector, Muffler& muffler)
+{
+    Vector3D unit_vector = direction_vector/direction_vector.abs();
+    return coordinates + unit_vector*distance_using_power(muffler);
+}
+
 void Receiver::receive_signals(std::vector<Signal>& v_sign)
 {
     for(int i = v_sign.size()-1; i >= 0; i--)
@@ -72,3 +78,4 @@ double Receiver::speed_calculation(Radiator& rad, Object& object, Muffler& muffl
     double speed = (std::pow(std::abs(l1*l1 + l3*l3 - 2*l2*l2), 0.5))/dt*pow(0.5,0.5);
     return speed;
 }
+

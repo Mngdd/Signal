@@ -26,12 +26,14 @@ class Receiver
         double amplification_coefficient;
 
         friend double distance(Object& object, Receiver& receiver);
+        friend Vector3D dir_to_obj(Object& object, Receiver& receiver);
 
         void receive_signals(std::vector<Signal>& v_sign);
 
         double distance();
         double distance_using_power();
         double distance_using_power(Muffler& muffler);
+        Vector3D coordinates_using_power(Vector3D direction_vector, Muffler& muffler);
 
         double speed_calculation(Radiator& rad, Object& object, Muffler& muffler, double dt);
         

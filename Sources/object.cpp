@@ -39,3 +39,8 @@ double distance(Object& object, Receiver& receiver)
 {
     return (object.val_coordinates - receiver.coordinates).abs();
 }
+
+Vector3D dir_to_obj(Object& object, Receiver& receiver)
+{
+    return object.val_coordinates - receiver.coordinates;
+}

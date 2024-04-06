@@ -30,6 +30,7 @@ class Object
         void update_position(double dt);
         double sigma() { return effective_reflection_surface; }
         friend double distance(Object& object, Receiver& receiver);
+        friend Vector3D dir_to_obj(Object& object, Receiver& receiver);
         Vector3D coordinates();
 
     private:
