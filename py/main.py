@@ -44,6 +44,7 @@ class MainMenu(QMainWindow):
         self.wave_length = 0  # aka Lambda
         self.L = 0
         self.REAL_distance = 0
+        self.calculated_coords = (0, 0, 0)
         self.dark_now = False
         self.warn_stylesheet = "color: rgb(255, 170, 0)"
         self.Button.clicked.connect(self.calculate)
@@ -184,6 +185,8 @@ class MainMenu(QMainWindow):
         else:
             self.DIST_NUM.setText(str(self.distance))
             self.VEL_NUM.setText(str(self.velocity))
+            for i in range(3):
+                exec(f"self.COORDS_{['X', 'Y', 'Z'][i]}.setText(str(self.calculated_coords[{i}]))")
         try:
             os.remove(self.json_abs_path)
         except ...:
@@ -193,9 +196,10 @@ class MainMenu(QMainWindow):
         with open(self.json_abs_path, "w") as outfile:
             json.dump(self.data, outfile)
             print("wrote file at", self.json_abs_path)
+        tmp_path = self.json_abs_path
         if len(amount) * len(path):
-            self.json_abs_path += ' ' + path + ' ' + amount
-        res = subprocess.run(f"../Signal.exe {self.json_abs_path}",
+            tmp_path += ' ' + path + ' ' + amount
+        res = subprocess.run(f"../Signal.exe {tmp_path}",
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
 
@@ -204,7 +208,9 @@ class MainMenu(QMainWindow):
         print(out, len(err), err, errcode)
         if not len(amount) * len(path):
             tmp = [float(i) for i in out.split("$RESULT$")[1:]]
-            self.distance, self.velocity, self.sigma, self.wave_length, self.L = tmp
+            (self.distance, self.velocity, self.sigma,
+             self.wave_length, self.L, *self.calculated_coords) = tmp
+            print(self.calculated_coords)
         return out, err, errcode
 
     def draw_plots(self):
@@ -292,6 +298,8 @@ class MainMenu(QMainWindow):
         self.ERR_MSG.setVisible(True)
         self.DIST_NUM.setText("NA")
         self.VEL_NUM.setText("NA")
+        for i in range(3):
+            exec(f"self.COORDS_{['X', 'Y', 'Z'][i]}.setText('NA')")
 
     def switch_themes(self):
         ...

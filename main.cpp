@@ -66,10 +66,10 @@ void simulate(const std::string &path, const std::string &export_path = "$ABORT$
     Vector3D obj_coords = rec.coordinates_using_power(dir_to_obj_vector, muf);
 
     std::cout << "$RESULT$" << muffled_distance << "$RESULT$" << speed <<
-              // "$RESULT$" << obj_coords.x << "$RESULT$" << obj_coords.y <<
-              // "$RESULT$" << obj_coords.z <<
               "$RESULT$" << rec.sigma << "$RESULT$" << rec.wave_length <<
-              "$RESULT$" << L << std::endl;
+              "$RESULT$" << L <<
+              "$RESULT$" << obj_coords.x << "$RESULT$" << obj_coords.y <<
+              "$RESULT$" << obj_coords.z <<std::endl;
     // ВСЕГДА ПИШИТЕ ENDL И РАЗДЕЛЯЙТЕ ВВОД СПЕЦТЕКСТОМ ИНАЧЕ Я ВАС НАЙДУ И ЗАДУШУ
     if (export_path != "$ABORT$") {
         std::ofstream outfile(export_path);

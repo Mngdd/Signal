@@ -1068,7 +1068,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="VEL_NUM_2">
+            <widget class="QLabel" name="COORDS_X">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                <horstretch>0</horstretch>
@@ -1104,7 +1104,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="VEL_NUM_3">
+            <widget class="QLabel" name="COORDS_Y">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                <horstretch>0</horstretch>
@@ -1140,7 +1140,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="VEL_NUM_4">
+            <widget class="QLabel" name="COORDS_Z">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                <horstretch>0</horstretch>
