@@ -39,7 +39,7 @@ std::pair<Vector3D, Vector3D> Receiver::coordinates_with_mse(Vector3D direction_
     std::vector<double> ordinates;
     std::vector<double> applicates;
 
-    for(int i = 0; i < 52; i++)
+    for(int i = 0; i < number_of_measurements; i++)
     {
         Vector3D coordinate = coordinates + unit_vector*distance_using_power(muffler);
         abscisses.push_back(coordinate.x);
@@ -97,7 +97,7 @@ std::pair<double, double> Receiver::mse(std::vector<double> arr)
 
     double sumSquaredDiff = 0;
 
-    for (size_t i = 0; i < arr.size(); ++i) 
+    for (size_t i = 0; i < arr.size(); ++i)
         sumSquaredDiff += std::pow(arr[i] - mean, 2);
 
     return {mean, std::pow((sumSquaredDiff / arr.size()) , 0.5)};
@@ -112,8 +112,13 @@ std::pair<double, double> Receiver::mnk(std::vector<double> time, std::vector<do
         sumX += time[i];
         sumY += coord[i];
         sumXY += time[i] * coord[i];
-        sumX2 += time[i] * coord[i];
+        sumX2 += time[i] * time[i];
     }
+ 
+    // double avrX = sumX / n;
+    // double avrY = sumY / n;
+    // double avrXY = sumXY / n;
+    // double avrX2 = sumX2 / n;
 
     double k = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
     double b = (sumY - k * sumX) / n;
@@ -139,3 +144,34 @@ double Receiver::speed_calculation(Radiator& rad, Object& object, Muffler& muffl
     return speed;
 }
 
+Vector3D Receiver::speed_vector_with_mse(Radiator& rad, Object& object, Muffler& muffler, Vector3D direction_vector, double dt)
+{
+    std::vector<double> abscisses;
+    std::vector<double> ordinates;
+    std::vector<double> applicates;
+
+    std::vector<double> time_vector;
+
+    for(int i = 1; i <= speed_measurements_amount; i++)
+    {
+
+        time_vector.push_back(i*dt);
+
+        rad.emit_signal(*this, object);
+        Vector3D coord = coordinates_with_mse(direction_vector, muffler).first;
+
+        abscisses.push_back(coord.x);
+        ordinates.push_back(coord.y);
+        applicates.push_back(coord.z);
+
+        object.update_position(dt);
+    }
+
+    Vector3D speed_vector;
+
+    speed_vector.x = mnk(time_vector, abscisses).first;
+    speed_vector.y = mnk(time_vector, ordinates).first;
+    speed_vector.z = mnk(time_vector, applicates).first;
+
+    return speed_vector;
+}
