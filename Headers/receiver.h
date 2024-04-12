@@ -39,6 +39,9 @@ class Receiver
         
         std::pair<double, double> mse(std::vector<double>);
 
+        std::pair<double, double> mnk(std::vector<double>, std::vector<double>);
+
+
     private:
         Vector3D coordinates;
         double current_energy;
