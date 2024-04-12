@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1280</width>
-    <height>578</height>
+    <height>588</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -964,7 +964,6 @@
           <font>
            <family>Microsoft Sans Serif</family>
            <pointsize>12</pointsize>
-           <weight>50</weight>
            <bold>false</bold>
           </font>
          </property>
@@ -1332,7 +1331,7 @@
      <x>0</x>
      <y>0</y>
      <width>1280</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1352,7 +1351,9 @@
      <string>[     Draw     ]</string>
     </property>
     <addaction name="action_draw_plots"/>
+    <addaction name="separator"/>
     <addaction name="action_draw_scene"/>
+    <addaction name="action_draw_scene_anim"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuDraw"/>
@@ -1379,7 +1380,12 @@
   </action>
   <action name="action_draw_scene">
    <property name="text">
-    <string>Draw scene</string>
+    <string>Draw static scene</string>
+   </property>
+  </action>
+  <action name="action_draw_scene_anim">
+   <property name="text">
+    <string>Draw animated scene</string>
    </property>
   </action>
  </widget>
