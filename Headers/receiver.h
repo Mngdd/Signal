@@ -18,12 +18,6 @@ class Receiver
     public:
         Receiver(Vector3D coordinates_, double critical_energy_);
 
-        double radiated_power;
-        double received_power;
-        double L;
-        double wave_length;
-        double sigma;
-        double amplification_coefficient;
 
         friend double distance(Object& object, Receiver& receiver);
         friend Vector3D dir_to_obj(Object& object, Receiver& receiver);
@@ -41,6 +35,9 @@ class Receiver
         
         std::pair<double, double> mse(std::vector<double>);
 
+        double get_wave_length() { return wave_length; }
+        double get_sigma() { return sigma; }
+
     private:
         Vector3D coordinates;
         double current_energy;
@@ -50,5 +47,11 @@ class Receiver
         double dist;
         int received_signals_count;
 
+        double radiated_power;
+        double received_power;
+        double L;
+        double wave_length;
+        double sigma;
+        double amplification_coefficient;
 };
 

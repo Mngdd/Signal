@@ -66,7 +66,7 @@ void simulate(const std::string &path, const std::string &export_path = "$ABORT$
     double speed = rec.speed_calculation(rad, obj, muf,  delta_t);
 
     std::cout << "$RESULT$" << muffled_distance << "$RESULT$" << speed <<
-              "$RESULT$" << rec.sigma << "$RESULT$" << rec.wave_length <<
+              "$RESULT$" << rec.get_sigma() << "$RESULT$" << rec.get_wave_length() <<
               "$RESULT$" << L <<
               "$RESULT$" << obj_coords.x << "$RESULT$" << obj_coords.y <<
               "$RESULT$" << obj_coords.z <<std::endl;
