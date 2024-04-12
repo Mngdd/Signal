@@ -73,6 +73,24 @@ std::pair<double, double> Receiver::mse(std::vector<double> arr)
     return {std::pow((sumSquaredDiff / arr.size()) , 0.5) , mean};
 }
 
+std::pair<double, double> Receiver::mnk(std::vector<double> time, std::vector<double> coord)
+{
+    int n = time.size();
+    double sumX = 0.0, sumY = 0.0, sumXY = 0.0, sumX2 = 0.0;
+
+    for(int i = 0; i < n; i++) {
+        sumX += time[i];
+        sumY += coord[i];
+        sumXY += time[i] * coord[i];
+        sumX2 += time[i] * coord[i];
+    }
+
+    double k = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+    double b = (sumY - k * sumX) / n;
+
+    return std::make_pair(k, b);
+}
+
 double Receiver::speed_calculation(Radiator& rad, Object& object, Muffler& muffler, double dt)
 {
     double l1, l2, l3;
