@@ -1,6 +1,5 @@
 import matplotlib.figure
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 from math import pi as math_pi
 import numpy as np
 import random
@@ -14,8 +13,15 @@ import pathlib
 
 import qdarktheme
 from PyQt6 import uic, QtGui
-from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QInputDialog
+from PyQt6.QtCore import QThread, pyqtSignal, Qt
+from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QInputDialog, QWidget, QLabel
+from PIL import Image
 
+PATH_TO_ICON = pathlib.Path(os.path.dirname(__file__)).parent.__str__() + "\\UI\\rofls.png"
+
+
+# FIXME: я где-то относительный путь писал а где-то абсолютный, стоит разобраться с этим
+# TODO: сделать читабельным
 
 class MainMenu(QMainWindow):
     def __init__(self):
@@ -23,6 +29,7 @@ class MainMenu(QMainWindow):
         uic.loadUi('../UI/main_window.ui', self)
         self.setWindowTitle('Signal')
         self.setWindowIcon(QtGui.QIcon('../UI/ico-white.png'))
+        self.setFixedSize(self.size())
 
         self.data = dict()
         with open(pathlib.Path(__file__).parent.resolve().__str__().replace('\\',
@@ -44,10 +51,12 @@ class MainMenu(QMainWindow):
         self.sigma = 0
         self.wave_length = 0  # aka Lambda
         self.L = 0
-        self.REAL_distance = 0
         self.calculated_coords = (0, 0, 0)
         self.tmp_object_coords = self.data["OBJ"]["COORD"]
         self.dark_now = False
+        self.wait_for_video = False
+        self.window = GifPlayer()
+        self.progress = LoadBar()
         self.warn_stylesheet = "color: rgb(255, 170, 0)"
         self.Button.clicked.connect(self.calculate)
         stylesheet = """ 
@@ -55,7 +64,7 @@ class MainMenu(QMainWindow):
                     QTabWidget>QWidget>QWidget{background: gray;}   
                     """
         # посхалко
-        name = random.choices(["Mark down && skufidon", "nekit b == gnomie", "Signal"], weights=(1.5, 0.5, 98))[0]
+        name = random.choices(["Mark down && skufidon", "nekit b == gnomie", "Signal"], weights=(10, 10, 80))[0]
         self.setWindowTitle(name)
 
         self.setStyleSheet(stylesheet)
@@ -205,8 +214,6 @@ class MainMenu(QMainWindow):
         res = subprocess.run(f"../Signal.exe {tmp_path}",
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
-        path = os.environ['PATH']
-        print("PATH:", "\n".join(path.split(';')), sep='\n')
         # wait for the process to terminate
         out, err, errcode = res.stdout.strip().decode(), res.stderr, res.returncode
         print(out, len(err), err, errcode)
@@ -260,23 +267,45 @@ class MainMenu(QMainWindow):
         ax = self.figure_scene.add_subplot((0, 0.05, 1, 0.90), projection='3d', facecolor="lightgrey")
 
         # объект, станция, дистанция
-        ...
-        ani = animation.FuncAnimation(
-            self.figure_scene, self.calculate_spheres, 30,
-            fargs=ax, interval=100
-        )
+        self.calculate_spheres(ax)
+        if do_anim:
+            frames = 30
 
-        self.figure_scene.show()
+            self.progress.show()
+            self.progress.progress_bar.setValue(0)
+
+            gif_maker = DrawGif(frames, ax, self.figure_scene, self.calculate_spheres)
+            gif_maker.countChanged.connect(lambda val: self.progress.progress_bar.setValue(val))
+            gif_maker.finished.connect(lambda: self.finish_gif())
+            gif_maker.start()
+            self.wait_for_video = True
+            while self.wait_for_video:
+                QThread.sleep(0.5)
+        else:
+            self.figure_scene.show()
+
+    def finish_gif(self):
+        self.wait_for_video = False
+        self.progress.hide()
+        self.progress.progress_bar.setValue(0)
+        self.window.play()
 
     def calculate_spheres(self, ax: plt.Axes) -> None:
         ax.cla()
+        rl_to_obj_vect = Vector(self.data["RL"]["COORD"], self.tmp_object_coords)
+        real_distance = rl_to_obj_vect.get_size()
 
-        self.REAL_distance = sum([(self.tmp_object_coords[i] - self.data["RL"]["COORD"][i]) ** 2
-                                  for i in range(3)]) ** 0.5
+        ax.plot(
+            [self.data["RL"]["COORD"][0], self.tmp_object_coords[0]],
+            [self.data["RL"]["COORD"][1], self.tmp_object_coords[1]],
+            [self.data["RL"]["COORD"][2], self.tmp_object_coords[2]]
+        )
+
         list_center = [self.tmp_object_coords, self.data["RL"]["COORD"], self.data["RL"]["COORD"]]
-        list_radius = [self.data["OBJ"]["RADIUS"], 1, self.REAL_distance]
+        list_radius = [self.data["OBJ"]["RADIUS"], 1, real_distance]
         names = ["object", "RLS", "distance radius"]
         list_color_info = [('r', 0.8), ('b', 0.9), ('yellow', 0.2)]
+
         min_, max_ = float("inf"), 0
         for name_, c, r, draw in zip(names, list_center, list_radius, list_color_info):
             # draw sphere
@@ -286,7 +315,13 @@ class MainMenu(QMainWindow):
             z = r * np.cos(v)
             min_ = min(np.amin(x), np.amin(y), np.amin(z), min_)  # lowest number in the array
             max_ = max(np.amax(x), np.amax(y), np.amax(z), max_)  # lowest number in the array
-            ax.plot_surface(x - c[0], y - c[1], z - c[2], color=draw[0], alpha=draw[1], label=name_)
+            ax.plot_surface(c[0] - x, c[1] - y, c[2] - z, color=draw[0], alpha=draw[1], label=name_)
+
+        ax.text(
+            self.data["RL"]["COORD"][0], self.data["RL"]["COORD"][1], self.data["RL"]["COORD"][2],
+            f"dist={round(real_distance, 3)}", size=15,
+            zorder=5, zdir=rl_to_obj_vect.get_direction_vect_lst(), color="darkorange"
+        )
 
         ax.set_xlim3d(min_, max_)
         ax.set_ylim3d(min_, max_)
@@ -295,7 +330,7 @@ class MainMenu(QMainWindow):
         ax.legend()
 
         vel_abs = sum(i ** 2 for i in self.data["OBJ"]["VEL"]) ** 0.5
-        self.tmp_object_coords = (
+        self.tmp_object_coords = tuple(
             self.tmp_object_coords[i] + self.data["OBJ"]["VEL"][i] / vel_abs
             for i in range(3)
         )
@@ -309,7 +344,6 @@ class MainMenu(QMainWindow):
 
     def fig_update_ico(self):
         # funny icon and not that stupid matplotlib icon
-        PATH_TO_ICON = pathlib.Path(os.path.dirname(__file__)).parent.__str__() + "\\UI\\rofls.png"
         self.figure_plots.canvas.manager.window.setWindowIcon(QtGui.QIcon(PATH_TO_ICON))
         self.figure_scene.canvas.manager.window.setWindowIcon(QtGui.QIcon(PATH_TO_ICON))
 
@@ -322,9 +356,101 @@ class MainMenu(QMainWindow):
         self.VEL_NUM.setText("NA")
         for i in range(3):
             exec(f"self.COORDS_{['X', 'Y', 'Z'][i]}.setText('NA')")
+        self.window.hide()
+        self.progress.progress_bar.setValue(0)
+        self.progress.hide()
 
-    def switch_themes(self):
+    def switch_themes(self):  # TODO: implement me
         ...
+
+
+class DrawGif(QThread):
+    countChanged = pyqtSignal(int)
+
+    def __init__(self, frames: int, ax: plt.Axes, fig: plt.figure, calc: callable):
+        super().__init__()
+        self.calc = calc
+        self.frames = frames
+        self.ax = ax
+        self.fig = fig
+
+    def run(self) -> None:
+        pics = []
+        for i in range(self.frames - 1):
+            self.calc(self.ax)
+            pics.append(fig2img(self.fig))
+
+            self.countChanged.emit(int((i + 1) / self.frames * 100))
+        self.countChanged.emit(100)
+        pics[0].save(
+            "out.gif", save_all=True, append_images=pics, duration=150, loop=0
+        )
+
+
+class LoadBar(QWidget):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('../UI/progress_bar.ui', self)
+        self.setWindowIcon(QtGui.QIcon(PATH_TO_ICON))
+        self.setFixedSize(self.size())
+
+    def closeEvent(self, event):
+        event.ignore()
+
+
+class GifPlayer(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("Animated scene")
+        self.setGeometry(300, 300, 480, 480)
+        self.setWindowIcon(QtGui.QIcon(PATH_TO_ICON))
+
+        self.movie = QtGui.QMovie('out.gif')
+        self.label = QLabel(self)
+        self.label.resize(480, 480)
+        self.setFixedSize(self.size())
+
+    def play(self):
+        self.show()
+        self.movie = QtGui.QMovie('out.gif')
+        self.label.setMovie(self.movie)
+        print("starting gif")
+        self.movie.start()
+
+    def stop(self):
+        self.movie.stop()
+        self.hide()
+
+
+class Vector:
+    def __init__(self, a, b):
+        self.start = a
+        self.end = b
+
+    def get_size(self) -> float:
+        return sum([(self.end[i] - self.start[i]) ** 2 for i in range(3)]) ** 0.5
+
+    def __truediv__(self, val):
+        new_start = [self.start[i] / val for i in range(3)]
+        new_end = [self.end[i] / val for i in range(3)]
+        return Vector(new_start, new_end)
+
+    def get_vector_lst(self):
+        return [self.end[i] - self.start[i] for i in range(3)]
+
+    def get_direction_vect_lst(self):
+        return [a / self.get_size() for a in self.get_vector_lst()]
+
+
+def fig2img(fig):
+    """Convert a Matplotlib figure to a PIL Image and return it"""
+    import io
+    buf = io.BytesIO()
+    fig.savefig(buf)
+    buf.seek(0)
+    img = Image.open(buf)
+    return img
 
 
 def except_hook(cls, exception, traceback):
@@ -332,6 +458,7 @@ def except_hook(cls, exception, traceback):
 
 
 if __name__ == '__main__':
+    matplotlib.use("Qt5Agg")
     plt.style.use("ggplot")
 
     sys.excepthook = except_hook
@@ -339,7 +466,6 @@ if __name__ == '__main__':
     ex = MainMenu()
 
     qdarktheme.setup_theme()
-    ex.setFixedSize(1280, 580)
     qdarktheme.setup_theme(custom_colors={"primary": "#FFA317"})
 
     app.setStyle('Fusion')
