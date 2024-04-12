@@ -33,6 +33,9 @@ class Receiver
 
         double speed_calculation(Radiator& rad, Object& object, Muffler& muffler, double dt);
         
+        double get_sigma() { return sigma; }
+        double get_wave_length() { return wave_length; }
+
         std::pair<double, double> mse(std::vector<double>);
 
         std::pair<double, double> mnk(std::vector<double>, std::vector<double>);
