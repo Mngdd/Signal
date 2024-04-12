@@ -48,6 +48,17 @@ void Receiver::receive_signals(std::vector<Signal>& v_sign)
         dist = delay_sum/received_signals_count*speed_of_light/2;
 }
 
+void Receiver::receive_signals(double radiated_power_, double received_power_, double L_,
+                             double wave_length_, double sigma_, double amplification_coefficient_)
+{
+    radiated_power = radiated_power_;
+    received_power = received_power_;
+    L = L_;
+    wave_length = wave_length_;
+    sigma = sigma_;
+    amplification_coefficient = amplification_coefficient_;
+}
+
 std::pair<double, double> Receiver::mse(std::vector<double> arr)
 {
     double mean = 0.0;
