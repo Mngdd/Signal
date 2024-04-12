@@ -36,9 +36,9 @@ class Receiver
         double get_sigma() { return sigma; }
         double get_wave_length() { return wave_length; }
 
-        std::pair<double, double> mse(std::vector<double>);
+        std::pair<double, double> mse(std::vector<double> arr);
 
-        std::pair<double, double> mnk(std::vector<double>, std::vector<double>);
+        std::pair<double, double> mnk(std::vector<double> time, std::vector<double> coord);
 
 
     private:
