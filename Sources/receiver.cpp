@@ -66,16 +66,17 @@ double Receiver::speed_calculation(Radiator& rad, Object& object, Muffler& muffl
 {
     double l1, l2, l3;
     rad.emit_signal(*this, object);
-    l1 = distance_using_power(muffler);
+    l1 = distance_using_power();
     object.update_position(dt);
     rad.emit_signal(*this, object);
-    l2 = distance_using_power(muffler);
+    l2 = distance_using_power();
     object.update_position(dt);
     rad.emit_signal(*this, object);
-    l3 = distance_using_power(muffler);
+    l3 = distance_using_power();
     object.update_position(dt);
 
     double speed = (std::pow(std::abs(l1*l1 + l3*l3 - 2*l2*l2), 0.5))/dt*pow(0.5,0.5);
+    muffler.noise_mc(speed);
     return speed;
 }
 
