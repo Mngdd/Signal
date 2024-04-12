@@ -17,17 +17,13 @@ void Radiator::emit_signal(std::vector<Signal>& signal_vector)
 
 void Radiator::emit_signal(Receiver& receiver, Object& object)
 {
-    receiver.radiated_power = energy;
-
     double R = distance(object, receiver);
     double member_1 = (energy*amplification_coefficient)/(4*PI*R*R);
     double member_2 = (object.sigma())/(4*PI*R*R);
     double member_3 = (amplification_coefficient*wave_length*wave_length)/(4*PI);
     double member_4 = 1/L;
 
-    receiver.received_power = member_1*member_2*member_3*member_4;
-    receiver.L = L;
-    receiver.sigma = object.sigma();
-    receiver.wave_length = wave_length;
-    receiver.amplification_coefficient = amplification_coefficient;
+    double received_power = member_1*member_2*member_3*member_4;
+    
+    receiver.receive_signals(energy, received_power, L, wave_length, object.sigma(), amplification_coefficient);
 }

@@ -29,6 +29,8 @@ class Receiver
         friend Vector3D dir_to_obj(Object& object, Receiver& receiver);
 
         void receive_signals(std::vector<Signal>& v_sign);
+        void receive_signals(double radiated_power_, double received_power_, double L_,
+                             double wave_length_, double sigma_, double amplification_coefficient_);
 
         double distance();
         double distance_using_power();
