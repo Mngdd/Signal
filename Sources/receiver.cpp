@@ -31,6 +31,36 @@ Vector3D Receiver::coordinates_using_power(Vector3D direction_vector, Muffler& m
     return coordinates + unit_vector*distance_using_power(muffler);
 }
 
+std::pair<Vector3D, Vector3D> Receiver::coordinates_with_mse(Vector3D direction_vector, Muffler& muffler)
+{
+    Vector3D unit_vector = direction_vector/direction_vector.abs();
+
+    std::vector<double> abscisses;
+    std::vector<double> ordinates;
+    std::vector<double> applicates;
+
+    for(int i = 0; i < 52; i++)
+    {
+        Vector3D coordinate = coordinates + unit_vector*distance_using_power(muffler);
+        abscisses.push_back(coordinate.x);
+        ordinates.push_back(coordinate.y);
+        applicates.push_back(coordinate.z); 
+    }
+
+    std::pair<Vector3D, Vector3D> answer = {{0, 0, 0}, {0, 0, 0}};
+
+    answer.first.x = mse(abscisses).first;
+    answer.second.x = mse(abscisses).second;
+
+    answer.first.y = mse(abscisses).first;
+    answer.second.y = mse(abscisses).second;
+
+    answer.first.z = mse(abscisses).first;
+    answer.second.z = mse(abscisses).second;
+
+    return answer;
+}
+
 void Receiver::receive_signals(std::vector<Signal>& v_sign)
 {
     for(int i = v_sign.size()-1; i >= 0; i--)
@@ -70,7 +100,7 @@ std::pair<double, double> Receiver::mse(std::vector<double> arr)
     for (size_t i = 0; i < arr.size(); ++i) 
         sumSquaredDiff += std::pow(arr[i] - mean, 2);
 
-    return {std::pow((sumSquaredDiff / arr.size()) , 0.5) , mean};
+    return {mean, std::pow((sumSquaredDiff / arr.size()) , 0.5)};
 }
 
 std::pair<double, double> Receiver::mnk(std::vector<double> time, std::vector<double> coord)

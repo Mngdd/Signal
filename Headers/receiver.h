@@ -30,6 +30,7 @@ class Receiver
         double distance_using_power();
         double distance_using_power(Muffler& muffler);
         Vector3D coordinates_using_power(Vector3D direction_vector, Muffler& muffler);
+        std::pair<Vector3D, Vector3D> coordinates_with_mse(Vector3D direction_vector, Muffler& muffler);
 
         double speed_calculation(Radiator& rad, Object& object, Muffler& muffler, double dt);
         
@@ -49,6 +50,7 @@ class Receiver
         double delay_sum;
         double dist;
         int received_signals_count;
+        int number_of_measurements = 25;
 
         double radiated_power;
         double received_power;
