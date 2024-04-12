@@ -1,5 +1,6 @@
 import matplotlib.figure
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 from math import pi as math_pi
 import numpy as np
 import random
@@ -45,6 +46,7 @@ class MainMenu(QMainWindow):
         self.L = 0
         self.REAL_distance = 0
         self.calculated_coords = (0, 0, 0)
+        self.tmp_object_coords = self.data["OBJ"]["COORD"]
         self.dark_now = False
         self.warn_stylesheet = "color: rgb(255, 170, 0)"
         self.Button.clicked.connect(self.calculate)
@@ -90,6 +92,7 @@ class MainMenu(QMainWindow):
         self.action_export.triggered.connect(self.export)
         self.action_draw_plots.triggered.connect(self.draw_plots)
         self.action_draw_scene.triggered.connect(self.draw_scene)
+        self.action_draw_scene_anim.triggered.connect(lambda: self.draw_scene(True))
         self.ERR_MSG.setVisible(False)
 
         self.figure_plots = matplotlib.pyplot.figure()  # заглушка
@@ -202,7 +205,8 @@ class MainMenu(QMainWindow):
         res = subprocess.run(f"../Signal.exe {tmp_path}",
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
-
+        path = os.environ['PATH']
+        print("PATH:", "\n".join(path.split(';')), sep='\n')
         # wait for the process to terminate
         out, err, errcode = res.stdout.strip().decode(), res.stderr, res.returncode
         print(out, len(err), err, errcode)
@@ -210,7 +214,7 @@ class MainMenu(QMainWindow):
             tmp = [float(i) for i in out.split("$RESULT$")[1:]]
             (self.distance, self.velocity, self.sigma,
              self.wave_length, self.L, *self.calculated_coords) = tmp
-            print(self.calculated_coords)
+            print(self.calculated_coords)  # TODO: delete input.json on failure
         return out, err, errcode
 
     def draw_plots(self):
@@ -244,21 +248,32 @@ class MainMenu(QMainWindow):
         self.fig_update_ico()
         self.figure_plots.show()
 
-    def draw_scene(self):
+    def draw_scene(self, do_anim=False):
         if "NA" in (self.VEL_NUM.text(), self.DIST_NUM.text()):
             self.show_err_dialog("ERROR", "Unable to draw without correct calculations!")
             return
-
         self.figure_scene.clear()
         self.fig_update_ico()
+        self.tmp_object_coords = self.data["OBJ"]["COORD"]
 
         self.figure_scene.set_size_inches(4.8, 4.8)
         ax = self.figure_scene.add_subplot((0, 0.05, 1, 0.90), projection='3d', facecolor="lightgrey")
 
         # объект, станция, дистанция
-        self.REAL_distance = sum([(self.data["OBJ"]["COORD"][i] - self.data["RL"]["COORD"][i]) ** 2
+        ...
+        ani = animation.FuncAnimation(
+            self.figure_scene, self.calculate_spheres, 30,
+            fargs=ax, interval=100
+        )
+
+        self.figure_scene.show()
+
+    def calculate_spheres(self, ax: plt.Axes) -> None:
+        ax.cla()
+
+        self.REAL_distance = sum([(self.tmp_object_coords[i] - self.data["RL"]["COORD"][i]) ** 2
                                   for i in range(3)]) ** 0.5
-        list_center = [self.data["OBJ"]["COORD"], self.data["RL"]["COORD"], self.data["RL"]["COORD"]]
+        list_center = [self.tmp_object_coords, self.data["RL"]["COORD"], self.data["RL"]["COORD"]]
         list_radius = [self.data["OBJ"]["RADIUS"], 1, self.REAL_distance]
         names = ["object", "RLS", "distance radius"]
         list_color_info = [('r', 0.8), ('b', 0.9), ('yellow', 0.2)]
@@ -278,7 +293,12 @@ class MainMenu(QMainWindow):
         ax.set_zlim3d(min_, max_)
         ax.set_aspect("equal")
         ax.legend()
-        self.figure_scene.show()
+
+        vel_abs = sum(i ** 2 for i in self.data["OBJ"]["VEL"]) ** 0.5
+        self.tmp_object_coords = (
+            self.tmp_object_coords[i] + self.data["OBJ"]["VEL"][i] / vel_abs
+            for i in range(3)
+        )
 
     def show_err_dialog(self, title, txt):
         QMessageBox.critical(
@@ -319,7 +339,6 @@ if __name__ == '__main__':
     ex = MainMenu()
 
     qdarktheme.setup_theme()
-    print(app.style())
     ex.setFixedSize(1280, 580)
     qdarktheme.setup_theme(custom_colors={"primary": "#FFA317"})
 
