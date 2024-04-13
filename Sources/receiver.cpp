@@ -115,12 +115,12 @@ std::pair<double, double> Receiver::mnk(std::vector<double> time, std::vector<do
         sumX2 += time[i] * time[i];
     }
  
-    // double avrX = sumX / n;
-    // double avrY = sumY / n;
-    // double avrXY = sumXY / n;
-    // double avrX2 = sumX2 / n;
+    double avrX = sumX / n;
+    double avrY = sumY / n;
+    double avrXY = sumXY / n;
+    double avrX2 = sumX2 / n;
 
-    double k = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+    double k = (avrXY - avrX * avrY) / (avrX2 - avrX * avrX);
     double b = (sumY - k * sumX) / n;
 
     return std::make_pair(k, b);
