@@ -158,7 +158,8 @@ Vector3D Receiver::speed_vector_with_mse(Radiator& rad, Object& object, Muffler&
         time_vector.push_back(i*dt);
 
         rad.emit_signal(*this, object);
-        Vector3D coord = coordinates_using_power(direction_vector, muffler);
+        // Vector3D coord = coordinates_using_power(direction_vector, muffler);
+        Vector3D coord = coordinates_with_mse(direction_vector, muffler).second;
 
         abscisses.push_back(coord.x);
         ordinates.push_back(coord.y);
