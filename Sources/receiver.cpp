@@ -121,7 +121,7 @@ std::pair<double, double> Receiver::mnk(std::vector<double> time, std::vector<do
     double avrX2 = sumX2 / n;
 
     double k = (avrXY - avrX * avrY) / (avrX2 - avrX * avrX);
-    double b = (sumY - k * sumX) / n;
+    double b = (avrY - k * avrX);
 
     return std::make_pair(k, b);
 }
@@ -158,7 +158,7 @@ Vector3D Receiver::speed_vector_with_mse(Radiator& rad, Object& object, Muffler&
         time_vector.push_back(i*dt);
 
         rad.emit_signal(*this, object);
-        Vector3D coord = coordinates_with_mse(direction_vector, muffler).first;
+        Vector3D coord = coordinates_using_power(direction_vector, muffler);
 
         abscisses.push_back(coord.x);
         ordinates.push_back(coord.y);
