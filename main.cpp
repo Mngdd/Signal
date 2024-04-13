@@ -82,7 +82,8 @@ void simulate(const std::string &path, const std::string &export_path = "$ABORT$
             rad.emit_signal(rec, obj);
 
             muffled_distance = rec.distance_using_power(muf);
-            speed = rec.speed_calculation(rad, obj, muf, delta_t);
+            speed_vector = rec.speed_vector_with_mse(rad, obj, muf, dir_to_obj_vector, delta_t);
+            speed = speed_vector.abs();
 
             outfile << "MEASUREMENT NUMBER " << i << ":\n";
             outfile << "DISTANCE = " << muffled_distance << '\n';
