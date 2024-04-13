@@ -52,11 +52,11 @@ std::pair<Vector3D, Vector3D> Receiver::coordinates_with_mse(Vector3D direction_
     answer.first.x = mse(abscisses).first;
     answer.second.x = mse(abscisses).second;
 
-    answer.first.y = mse(abscisses).first;
-    answer.second.y = mse(abscisses).second;
+    answer.first.y = mse(ordinates).first;
+    answer.second.y = mse(ordinates).second;
 
-    answer.first.z = mse(abscisses).first;
-    answer.second.z = mse(abscisses).second;
+    answer.first.z = mse(applicates).first;
+    answer.second.z = mse(applicates).second;
 
     return answer;
 }
