@@ -15,9 +15,11 @@ class Signal
         Signal(Vector3D coordinates_, Vector3D starting_direction_vector_, double energy_);
 
         void change_direction(Object& obj);
+        double power() { return energy*energy; }
 
         Vector3D coordinates;
         Vector3D direction_vector;
         double passed_time;
         double energy;
+        double wave_length;
 };

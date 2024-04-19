@@ -12,26 +12,28 @@ Receiver::Receiver(Vector3D coordinates_, double critical_energy_) :
 
 double Receiver::distance() { return dist; }
 
-double Receiver::distance_using_power(Muffler& muffler)
+double Receiver::distance_using_power(Radiator& radiator, Object& object, Muffler& muffler)
 {
+    radiator.emit_signal(*this, object);
     muffler.noise_mc(received_power);
     double Pt_div_Pr = radiated_power/received_power;
     return std::pow(Pt_div_Pr*((std::pow(amplification_coefficient, 2)*sigma*std::pow(wave_length,2))/(64*pow(PI,3)*L)),0.25);
 }
 
-double Receiver::distance_using_power()
+double Receiver::distance_using_power(Radiator& radiator, Object& object)
 {
+    radiator.emit_signal(*this, object);
     double Pt_div_Pr = radiated_power/received_power;
     return std::pow(Pt_div_Pr*((std::pow(amplification_coefficient, 2)*sigma*std::pow(wave_length,2))/(64*pow(PI,3)*L)),0.25);
 }
 
-Vector3D Receiver::coordinates_using_power(Vector3D direction_vector, Muffler& muffler)
+Vector3D Receiver::coordinates_using_power(Radiator& radiator, Object& object, Vector3D direction_vector, Muffler& muffler)
 {
     Vector3D unit_vector = direction_vector/direction_vector.abs();
-    return coordinates + unit_vector*distance_using_power(muffler);
+    return coordinates + unit_vector*distance_using_power(radiator, object, muffler);
 }
 
-std::pair<Vector3D, Vector3D> Receiver::coordinates_with_mse(Vector3D direction_vector, Muffler& muffler)
+std::pair<Vector3D, Vector3D> Receiver::coordinates_with_mse(Radiator& radiator, Object& object, Vector3D direction_vector, Muffler& muffler)
 {
     Vector3D unit_vector = direction_vector/direction_vector.abs();
 
@@ -41,7 +43,7 @@ std::pair<Vector3D, Vector3D> Receiver::coordinates_with_mse(Vector3D direction_
 
     for(int i = 0; i < number_of_measurements; i++)
     {
-        Vector3D coordinate = coordinates + unit_vector*distance_using_power(muffler);
+        Vector3D coordinate = coordinates + unit_vector*distance_using_power(radiator, object, muffler);
         abscisses.push_back(coordinate.x);
         ordinates.push_back(coordinate.y);
         applicates.push_back(coordinate.z); 
@@ -57,6 +59,8 @@ std::pair<Vector3D, Vector3D> Receiver::coordinates_with_mse(Vector3D direction_
 
     answer.first.z = mse(applicates).first;
     answer.second.z = mse(applicates).second;
+
+    radiator.reset_energy();
 
     return answer;
 }
@@ -129,14 +133,11 @@ std::pair<double, double> Receiver::mnk(std::vector<double> time, std::vector<do
 double Receiver::speed_calculation(Radiator& rad, Object& object, Muffler& muffler, double dt)
 {
     double l1, l2, l3;
-    rad.emit_signal(*this, object);
-    l1 = distance_using_power();
+    l1 = distance_using_power(rad, object);
     object.update_position(dt);
-    rad.emit_signal(*this, object);
-    l2 = distance_using_power();
+    l2 = distance_using_power(rad, object);
     object.update_position(dt);
-    rad.emit_signal(*this, object);
-    l3 = distance_using_power();
+    l3 = distance_using_power(rad, object);
     object.update_position(dt);
 
     double speed = (std::pow(std::abs(l1*l1 + l3*l3 - 2*l2*l2), 0.5))/dt*pow(0.5,0.5);
@@ -158,7 +159,7 @@ Vector3D Receiver::speed_vector_with_mse(Radiator& rad, Object& object, Muffler&
         time_vector.push_back(i*dt);
 
         rad.emit_signal(*this, object);
-        Vector3D coord = coordinates_with_mse(direction_vector, muffler).first;
+        Vector3D coord = coordinates_with_mse(rad, object, direction_vector, muffler).first;
 
         abscisses.push_back(coord.x);
         ordinates.push_back(coord.y);

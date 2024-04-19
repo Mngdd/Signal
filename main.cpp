@@ -60,9 +60,10 @@ void simulate(const std::string &path, const std::string &export_path = "$ABORT$
 
     double delta_t = data["DELTA_TIME"].get<double>();
 
-    double muffled_distance = rec.distance_using_power(muf);
+    double muffled_distance = rec.distance_using_power(rad, obj, muf);
+    rad.reset_energy();
     Vector3D dir_to_obj_vector = dir_to_obj(obj, rec);
-    Vector3D obj_coords = rec.coordinates_with_mse(dir_to_obj_vector, muf).first;
+    Vector3D obj_coords = rec.coordinates_with_mse(rad, obj, dir_to_obj_vector, muf).first;
     Vector3D speed_vector = rec.speed_vector_with_mse(rad, obj, muf, dir_to_obj_vector, delta_t);
     // double speed = rec.speed_calculation(rad, obj, muf, delta_t);
     double speed = speed_vector.abs();
@@ -79,9 +80,8 @@ void simulate(const std::string &path, const std::string &export_path = "$ABORT$
 
         for (int i = 1; i <= number_of_measurements; i++) {
             obj.set_effective_reflection_surface(rec);
-            rad.emit_signal(rec, obj);
 
-            muffled_distance = rec.distance_using_power(muf);
+            muffled_distance = rec.distance_using_power(rad, obj, muf);
             speed_vector = rec.speed_vector_with_mse(rad, obj, muf, dir_to_obj_vector, delta_t);
             speed = speed_vector.abs();
 
@@ -89,6 +89,7 @@ void simulate(const std::string &path, const std::string &export_path = "$ABORT$
             outfile << "DISTANCE = " << muffled_distance << '\n';
             outfile << "SPEED = " << speed << '\n' << std::endl;
         }
+
     }
 }
 
