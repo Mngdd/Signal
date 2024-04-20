@@ -239,12 +239,12 @@ class MainMenu(QMainWindow):
         pr_lambda = [koef * i ** 2 * self.sigma for i in range(11)]
 
         deltas = [i for i in range(25)]
-        sigmas = []
+        distances = []
         delta_original = self.DELTA_TIME.value()
         for i in range(len(deltas)):
             self.DELTA_TIME.setValue(delta_original + i)
             self.call_cpp()
-            sigmas.append(self.sigma)
+            distances.append(self.distance)
         self.DELTA_TIME.setValue(delta_original)
 
         self.figure_plots, axes = plt.subplots(1, 3, figsize=(18.3, 4.8))
@@ -253,7 +253,7 @@ class MainMenu(QMainWindow):
 
         axes[0].plot(abscissa, pr_sigma)
         axes[1].plot(abscissa, pr_lambda)
-        axes[2].plot(deltas, sigmas)
+        axes[2].plot(deltas, distances)
 
         axes[0].set_title("Pr(sigma)")
         axes[0].set_xlabel('Pr')
@@ -263,9 +263,9 @@ class MainMenu(QMainWindow):
         axes[1].set_xlabel('Pr')
         axes[1].set_ylabel('lambda')
 
-        axes[2].set_title("Sigma(DeltaTime)")
+        axes[2].set_title("distance(DeltaTime)")
         axes[2].set_xlabel('DeltaTime')
-        axes[2].set_ylabel('Sigma')
+        axes[2].set_ylabel('distance')
 
         self.fig_update_ico()
         self.figure_plots.show()
@@ -323,13 +323,13 @@ class MainMenu(QMainWindow):
 
         min_, max_ = float("inf"), 0
         for name_, c, r, draw in zip(names, list_center, list_radius, list_color_info):
-            # draw sphere
+            # draw sphere.
             u, v = np.mgrid[0:2 * np.pi:20j, 0:np.pi:20j]
             x = r * np.cos(u) * np.sin(v)
             y = r * np.sin(u) * np.sin(v)
             z = r * np.cos(v)
             min_ = min(np.amin(x), np.amin(y), np.amin(z), min_)  # lowest number in the array
-            max_ = max(np.amax(x), np.amax(y), np.amax(z), max_)  # lowest number in the array
+            max_ = max(np.amax(x), np.amax(y), np.amax(z), max_)  # highest number in the array
             ax.plot_surface(c[0] - x, c[1] - y, c[2] - z, color=draw[0], alpha=draw[1], label=name_)
 
         ax.text(
