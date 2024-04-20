@@ -239,12 +239,12 @@ class MainMenu(QMainWindow):
         pr_lambda = [koef * i ** 2 * self.sigma for i in range(11)]
 
         deltas = [i for i in range(25)]
-        sigmas = []
+        distances = []
         delta_original = self.DELTA_TIME.value()
         for i in range(len(deltas)):
             self.DELTA_TIME.setValue(delta_original + i)
             self.call_cpp()
-            sigmas.append(self.sigma)
+            distances.append(self.distance)
         self.DELTA_TIME.setValue(delta_original)
 
         self.figure_plots, axes = plt.subplots(1, 3, figsize=(18.3, 4.8))
@@ -253,7 +253,7 @@ class MainMenu(QMainWindow):
 
         axes[0].plot(abscissa, pr_sigma)
         axes[1].plot(abscissa, pr_lambda)
-        axes[2].plot(deltas, sigmas)
+        axes[2].plot(deltas, distances)
 
         axes[0].set_title("Pr(sigma)")
         axes[0].set_xlabel('Pr')
@@ -263,9 +263,9 @@ class MainMenu(QMainWindow):
         axes[1].set_xlabel('Pr')
         axes[1].set_ylabel('lambda')
 
-        axes[2].set_title("Sigma(DeltaTime)")
+        axes[2].set_title("distance(DeltaTime)")
         axes[2].set_xlabel('DeltaTime')
-        axes[2].set_ylabel('Sigma')
+        axes[2].set_ylabel('distance')
 
         self.fig_update_ico()
         self.figure_plots.show()
