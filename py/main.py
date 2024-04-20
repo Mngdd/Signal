@@ -323,7 +323,7 @@ class MainMenu(QMainWindow):
 
         min_, max_ = float("inf"), 0
         for name_, c, r, draw in zip(names, list_center, list_radius, list_color_info):
-            # draw sphere
+            # draw sphere.
             u, v = np.mgrid[0:2 * np.pi:20j, 0:np.pi:20j]
             x = r * np.cos(u) * np.sin(v)
             y = r * np.sin(u) * np.sin(v)
