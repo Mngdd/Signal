@@ -329,7 +329,7 @@ class MainMenu(QMainWindow):
             y = r * np.sin(u) * np.sin(v)
             z = r * np.cos(v)
             min_ = min(np.amin(x), np.amin(y), np.amin(z), min_)  # lowest number in the array
-            max_ = max(np.amax(x), np.amax(y), np.amax(z), max_)  # lowest number in the array
+            max_ = max(np.amax(x), np.amax(y), np.amax(z), max_)  # highest number in the array
             ax.plot_surface(c[0] - x, c[1] - y, c[2] - z, color=draw[0], alpha=draw[1], label=name_)
 
         ax.text(
