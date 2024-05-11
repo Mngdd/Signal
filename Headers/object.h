@@ -10,13 +10,6 @@ class Receiver;
 class Signal;
 
 
-
-//New method - integration of object's position (интегрирование положения объекта, т.е. функция, которая обновляет его положение)
-//x(t+delta_t) = x(t) + vx*delta_t
-//y(t+delta_t) = y(t) + vy*delta_t
-//z(t+delta_t) = z(t) + vz*delta_t
-
-
 double distance(Object& object, Receiver& receiver);
 
 
@@ -26,7 +19,7 @@ class Object
         Object(Vector3D coordinates_, double radius_, double refractive_index_, Vector3D speed_vector_);
 
         void set_effective_reflection_surface(Receiver& receiver);
-        void reflect(std::vector<Signal>& v_sign);
+        //integration of object's position
         void update_position(double dt);
         double sigma() { return effective_reflection_surface; }
         friend double distance(Object& object, Receiver& receiver);

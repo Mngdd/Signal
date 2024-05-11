@@ -1,5 +1,4 @@
 #include "../Headers/vector3d.h"
-#include "../Headers/signal.h"
 #include "../Headers/receiver.h"
 #include "../Headers/radiator.h"
 #include "../Headers/object.h"
@@ -7,22 +6,13 @@
 #include <iostream>
 
 Receiver::Receiver(Vector3D coordinates_, double critical_energy_) :
-    coordinates{coordinates_}, critical_energy{critical_energy_}, delay_sum{0}, average_delay{0},
-    current_energy{0}, received_signals_count{0}, dist{0} {}
+    coordinates{coordinates_}, critical_energy{critical_energy_}, current_energy{0} {}
 
-double Receiver::distance() { return dist; }
 
 double Receiver::distance_using_power(Radiator& radiator, Object& object, Muffler& muffler)
 {
     radiator.emit_signal(*this, object);
     muffler.noise_mc(received_power);
-    double Pt_div_Pr = radiated_power/received_power;
-    return std::pow(Pt_div_Pr*((std::pow(amplification_coefficient, 2)*sigma*std::pow(wave_length,2))/(64*pow(PI,3)*L)),0.25);
-}
-
-double Receiver::distance_using_power(Radiator& radiator, Object& object)
-{
-    radiator.emit_signal(*this, object);
     double Pt_div_Pr = radiated_power/received_power;
     return std::pow(Pt_div_Pr*((std::pow(amplification_coefficient, 2)*sigma*std::pow(wave_length,2))/(64*pow(PI,3)*L)),0.25);
 }
@@ -63,23 +53,6 @@ std::pair<Vector3D, Vector3D> Receiver::coordinates_with_mse(Radiator& radiator,
     radiator.reset_energy();
 
     return answer;
-}
-
-void Receiver::receive_signals(std::vector<Signal>& v_sign)
-{
-    for(int i = v_sign.size()-1; i >= 0; i--)
-    {
-        if(can_collide(coordinates - v_sign[i].coordinates, v_sign[i].direction_vector))
-        {
-            delay_sum += v_sign[i].passed_time + ((coordinates - v_sign[i].coordinates).abs())/speed_of_light;
-            received_signals_count++;
-        }
-        v_sign.pop_back();
-    }
-    if(received_signals_count == 0)
-        dist = -1;
-    else
-        dist = delay_sum/received_signals_count*speed_of_light/2;
 }
 
 void Receiver::receive_signals(double radiated_power_, double received_power_, double L_,
@@ -128,21 +101,6 @@ std::pair<double, double> Receiver::mnk(std::vector<double> time, std::vector<do
     double b = (avrY - k * avrX);
 
     return std::make_pair(k, b);
-}
-
-double Receiver::speed_calculation(Radiator& rad, Object& object, Muffler& muffler, double dt)
-{
-    double l1, l2, l3;
-    l1 = distance_using_power(rad, object);
-    object.update_position(dt);
-    l2 = distance_using_power(rad, object);
-    object.update_position(dt);
-    l3 = distance_using_power(rad, object);
-    object.update_position(dt);
-
-    double speed = (std::pow(std::abs(l1*l1 + l3*l3 - 2*l2*l2), 0.5))/dt*pow(0.5,0.5);
-    muffler.noise_mc(speed);
-    return speed;
 }
 
 Vector3D Receiver::speed_vector_with_mse(Radiator& rad, Object& object, Muffler& muffler, Vector3D direction_vector, double dt)

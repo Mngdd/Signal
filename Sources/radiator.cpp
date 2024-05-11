@@ -1,19 +1,14 @@
 #include "../Headers/vector3d.h"
-#include "../Headers/signal.h"
 #include "../Headers/receiver.h"
 #include "../Headers/radiator.h"
 #include "../Headers/object.h"
 #include <iostream>
 
 
-Radiator::Radiator(double energy_, Vector3D coordinates_, Vector3D direction_vector_, double L_, double amplification_coefficient_) :
-    base_energy{energy_}, current_energy{energy_}, coordinates{coordinates_}, direction_vector{direction_vector_},
-    wave_length{(speed_of_light*plank_constant)/energy_}, L{L_}, amplification_coefficient{amplification_coefficient_} {}
-
-void Radiator::emit_signal(std::vector<Signal>& signal_vector)
-{
-    signal_vector.emplace_back(coordinates, direction_vector, current_energy);
-}
+Radiator::Radiator(double energy_, Vector3D coordinates_, double L_, double amplification_coefficient_) :
+    base_energy{energy_}, current_energy{energy_}, coordinates{coordinates_},
+    wave_length{(speed_of_light*plank_constant)/energy_}, L{L_},
+    amplification_coefficient{amplification_coefficient_} {}
 
 void Radiator::emit_signal(Receiver& receiver, Object& object)
 {

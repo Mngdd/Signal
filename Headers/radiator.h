@@ -11,8 +11,7 @@ class Object;
 class Radiator
 {
     public:
-        Radiator(double energy_, Vector3D coordinates_, Vector3D direction_vector_, double L_, double amplification_coefficient_);
-        void emit_signal(std::vector<Signal>& signal_vector);
+        Radiator(double energy_, Vector3D coordinates_, double L_, double amplification_coefficient_);
         void emit_signal(Receiver& receiver, Object& object);
         void reset_energy();
 
@@ -30,5 +29,4 @@ class Radiator
         int current_percent = 0;
 
         Vector3D coordinates;
-        Vector3D direction_vector;
 };

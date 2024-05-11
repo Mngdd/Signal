@@ -7,7 +7,6 @@
 #include "Headers/object.h"
 #include "Headers/radiator.h"
 #include "Headers/receiver.h"
-#include "Headers/signal.h"
 #include "Headers/muffler.h"
 #include "Libs/json.hpp"
 
@@ -30,9 +29,6 @@ void simulate(const std::string &path, const std::string &export_path = "$ABORT$
                  Vector3D{data["RL"]["COORD"][0].get<double>(),
                           data["RL"]["COORD"][1].get<double>(),
                           data["RL"]["COORD"][2].get<double>()},
-                 Vector3D{data["RL"]["DIR"][0].get<double>(),
-                          data["RL"]["DIR"][1].get<double>(),
-                          data["RL"]["DIR"][2].get<double>()},
                  L,
                  data["RL"]["AMP"].get<double>()
     };
