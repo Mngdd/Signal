@@ -24,5 +24,3 @@ Vector3D operator-(Vector3D v1, Vector3D v2);
 Vector3D operator*(double coefficient, Vector3D v);
 Vector3D operator*(Vector3D v, double coefficient);
 Vector3D operator/(Vector3D v, double coefficient);
-
-bool can_collide(Vector3D v1, Vector3D v2);

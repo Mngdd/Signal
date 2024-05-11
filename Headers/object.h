@@ -26,7 +26,6 @@ class Object
         Object(Vector3D coordinates_, double radius_, double refractive_index_, Vector3D speed_vector_);
 
         void set_effective_reflection_surface(Receiver& receiver);
-        void reflect(std::vector<Signal>& v_sign);
         void update_position(double dt);
         double sigma() { return effective_reflection_surface; }
         friend double distance(Object& object, Receiver& receiver);

@@ -65,23 +65,6 @@ std::pair<Vector3D, Vector3D> Receiver::coordinates_with_mse(Radiator& radiator,
     return answer;
 }
 
-void Receiver::receive_signals(std::vector<Signal>& v_sign)
-{
-    for(int i = v_sign.size()-1; i >= 0; i--)
-    {
-        if(can_collide(coordinates - v_sign[i].coordinates, v_sign[i].direction_vector))
-        {
-            delay_sum += v_sign[i].passed_time + ((coordinates - v_sign[i].coordinates).abs())/speed_of_light;
-            received_signals_count++;
-        }
-        v_sign.pop_back();
-    }
-    if(received_signals_count == 0)
-        dist = -1;
-    else
-        dist = delay_sum/received_signals_count*speed_of_light/2;
-}
-
 void Receiver::receive_signals(double radiated_power_, double received_power_, double L_,
                              double wave_length_, double sigma_, double amplification_coefficient_)
 {

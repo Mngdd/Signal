@@ -24,17 +24,6 @@ void Object::update_position(double dt)
     val_coordinates.z += speed_vector.z*dt;
 }
 
-void Object::reflect(std::vector<Signal>& v_sign)
-{
-    for(int i = v_sign.size() - 1; i >= 0; i--)
-    {
-        if(!can_collide(val_coordinates - v_sign[i].coordinates, v_sign[i].direction_vector))
-            v_sign.erase(v_sign.begin() + i, v_sign.begin() + i + 1);
-        else
-            v_sign[i].change_direction(*this);
-    }
-}
-
 double distance(Object& object, Receiver& receiver)
 {
     return (object.val_coordinates - receiver.coordinates).abs();
