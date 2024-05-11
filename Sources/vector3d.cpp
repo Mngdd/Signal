@@ -41,4 +41,4 @@ Vector3D operator/(Vector3D v, double coefficient)
     return (1/coefficient)*v;
 }
 
-//g++ -Og -Wall -Wextra -pedantic -Ilib -o Signal Sources/object.cpp Sources/radiator.cpp Sources/receiver.cpp Sources/signal.cpp Sources/vector3d.cpp Sources/muffler.cpp main.cpp
+//g++ -Og -Wall -Wextra -pedantic -Ilib -o Signal Sources/object.cpp Sources/radiator.cpp Sources/receiver.cpp Sources/vector3d.cpp Sources/muffler.cpp main.cpp

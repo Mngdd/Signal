@@ -1,6 +1,5 @@
 #include "../Headers/vector3d.h"
 #include "../Headers/object.h"
-#include "../Headers/signal.h"
 #include "../Headers/receiver.h"
 #include <iostream>
 
