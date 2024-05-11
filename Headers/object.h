@@ -36,7 +36,7 @@ class Object
     private:
         Vector3D val_coordinates;
         double refractive_index;
-        double effective_reflection_surface; //in the next realization it will depend on the radius
+        double effective_reflection_surface;
         double radius;
         Vector3D speed_vector;
 };
