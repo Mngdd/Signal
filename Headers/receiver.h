@@ -26,13 +26,10 @@ class Receiver
         void receive_signals(double radiated_power_, double received_power_, double L_,
                              double wave_length_, double sigma_, double amplification_coefficient_);
 
-        double distance();
-        double distance_using_power(Radiator& radiator, Object& object);
         double distance_using_power(Radiator& radiator, Object& object, Muffler& muffler);
         Vector3D coordinates_using_power(Radiator& radiator, Object& object, Vector3D direction_vector, Muffler& muffler);
         std::pair<Vector3D, Vector3D> coordinates_with_mse(Radiator& radiator, Object& object, Vector3D direction_vector, Muffler& muffler);
 
-        double speed_calculation(Radiator& rad, Object& object, Muffler& muffler, double dt);
         Vector3D speed_vector_with_mse(Radiator& rad, Object& object, Muffler& muffler, Vector3D direction_vector, double dt);
         
         double get_sigma() { return sigma; }
@@ -47,10 +44,6 @@ class Receiver
         Vector3D coordinates;
         double current_energy;
         double critical_energy;
-        double average_delay;
-        double delay_sum;
-        double dist;
-        int received_signals_count;
         int number_of_measurements = 25;
         int speed_measurements_amount = 10;
 
