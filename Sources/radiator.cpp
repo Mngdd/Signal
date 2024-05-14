@@ -10,6 +10,8 @@ Radiator::Radiator(double energy_, Vector3D coordinates_, double L_, double ampl
     wave_length{(speed_of_light*plank_constant)/energy_}, L{L_},
     amplification_coefficient{amplification_coefficient_} {}
 
+// function that calculates power, that receiver will get from radiator and
+// transfers private values from radiator to receiver
 void Radiator::emit_signal(Receiver& receiver, Object& object)
 {
     double R = distance(object, receiver);
@@ -28,6 +30,7 @@ void Radiator::emit_signal(Receiver& receiver, Object& object)
     wave_length = (speed_of_light*plank_constant)/current_energy;
 }
 
+// set energy back to base
 void Radiator::reset_energy()
 {
     current_energy = base_energy;

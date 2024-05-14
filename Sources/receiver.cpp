@@ -5,10 +5,14 @@
 #include "../Headers/muffler.h"
 #include <iostream>
 
+// base constructor
 Receiver::Receiver(Vector3D coordinates_, double critical_energy_) :
     coordinates{coordinates_}, critical_energy{critical_energy_}, current_energy{0} {}
 
 
+// calculate distance between object and radiolocation station,
+// using receiver power, radiated power, fix coefficient (L), amplification coefficient,
+// wave length, effective reflective surface, considering muffling effects
 double Receiver::distance_using_power(Radiator& radiator, Object& object, Muffler& muffler)
 {
     radiator.emit_signal(*this, object);
@@ -17,12 +21,17 @@ double Receiver::distance_using_power(Radiator& radiator, Object& object, Muffle
     return std::pow(Pt_div_Pr*((std::pow(amplification_coefficient, 2)*sigma*std::pow(wave_length,2))/(64*pow(PI,3)*L)),0.25);
 }
 
+// calculate coordinates of an object using
+// receiver power, radiated power, fix coefficient (L), amplification coefficient,
+ // wave length, effective reflective surface, considering muffling effects
 Vector3D Receiver::coordinates_using_power(Radiator& radiator, Object& object, Vector3D direction_vector, Muffler& muffler)
 {
     Vector3D unit_vector = direction_vector/direction_vector.abs();
     return coordinates + unit_vector*distance_using_power(radiator, object, muffler);
 }
 
+// calculate mean coordinates, and mean square error of coordinates of an object using
+// the same parameters as "coordinates_using_power", considering muffling effects
 std::pair<Vector3D, Vector3D> Receiver::coordinates_with_mse(Radiator& radiator, Object& object, Vector3D direction_vector, Muffler& muffler)
 {
     Vector3D unit_vector = direction_vector/direction_vector.abs();
@@ -55,6 +64,7 @@ std::pair<Vector3D, Vector3D> Receiver::coordinates_with_mse(Radiator& radiator,
     return answer;
 }
 
+// function to transfer parameters from radiator
 void Receiver::receive_signals(double radiated_power_, double received_power_, double L_,
                              double wave_length_, double sigma_, double amplification_coefficient_)
 {
@@ -66,6 +76,7 @@ void Receiver::receive_signals(double radiated_power_, double received_power_, d
     amplification_coefficient = amplification_coefficient_;
 }
 
+// mean square error
 std::pair<double, double> Receiver::mse(std::vector<double> arr)
 {
     double mean = 0.0;
@@ -80,6 +91,7 @@ std::pair<double, double> Receiver::mse(std::vector<double> arr)
     return {mean, std::pow((sumSquaredDiff / arr.size()) , 0.5)};
 }
 
+// least squares method
 std::pair<double, double> Receiver::mnk(std::vector<double> time, std::vector<double> coord)
 {
     int n = time.size();
@@ -103,6 +115,7 @@ std::pair<double, double> Receiver::mnk(std::vector<double> time, std::vector<do
     return std::make_pair(k, b);
 }
 
+// calculate speed vector of an object, using least squares method
 Vector3D Receiver::speed_vector_with_mse(Radiator& rad, Object& object, Muffler& muffler, Vector3D direction_vector, double dt)
 {
     std::vector<double> abscisses;

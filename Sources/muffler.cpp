@@ -6,6 +6,7 @@ Muffler::Muffler(
             : 
             noise_percent{noise_percent_} {}
 
+// muffle the signal
 void Muffler::noise_mc(double& power){
 
     std::random_device dev;

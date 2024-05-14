@@ -1,7 +1,7 @@
 #pragma once
 
 
-
+// Muffler - model class for muffling signal
 class Muffler
 {
 public:
