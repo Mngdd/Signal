@@ -457,9 +457,6 @@ class MainMenu(QMainWindow):
             logger.warning(f"failed to remove temporary json file at: {self.json_abs_path}\n"
                            f"error: {err}")
 
-    def switch_themes(self):  # TODO: implement me
-        ...
-
 
 class DrawGif(QThread):
     countChanged = pyqtSignal(int)
@@ -513,7 +510,7 @@ class GifPlayer(QWidget):
         self.show()
         self.movie = QtGui.QMovie('out.gif')
         self.label.setMovie(self.movie)
-        logger.infologger.info("starting gif")
+        logger.info("starting gif")
         self.movie.start()
 
     def stop(self):
