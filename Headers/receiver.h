@@ -51,6 +51,7 @@ class Receiver
         
         // getter for private parameter
         double get_sigma() { return sigma; }
+
         // getter got private parameter
         double get_wave_length() { return wave_length; }
 

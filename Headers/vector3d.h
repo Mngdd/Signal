@@ -14,8 +14,10 @@ class Vector3D
     public:
         Vector3D();
         Vector3D(double x_, double y_, double z_);
+
         // reverse a vector
         void reverse();
+
         // returns length of a vector
         double abs();
 
@@ -30,13 +32,18 @@ class Vector3D
 
 // sum of two vectors
 Vector3D operator+(Vector3D v1, Vector3D v2);
+
 // reverse a vector
 Vector3D operator-(Vector3D v);
+
 // subtraction of two vectors
 Vector3D operator-(Vector3D v1, Vector3D v2);
+
 // multiply vector by a constant
 Vector3D operator*(double coefficient, Vector3D v);
+
 // multiply vector by a constant
 Vector3D operator*(Vector3D v, double coefficient);
+
 // divide vector by a constant
 Vector3D operator/(Vector3D v, double coefficient);

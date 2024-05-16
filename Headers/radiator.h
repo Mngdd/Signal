@@ -18,6 +18,7 @@ class Radiator
         // function that calculates power, that receiver will get from radiator and
         // transfers private values from radiator to receiver
         void emit_signal(Receiver& receiver, Object& object);
+
         // set energy back to base
         void reset_energy();
 
